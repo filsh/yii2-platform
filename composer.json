@@ -1,0 +1,25 @@
+{
+	"name": "filsh/yii2-platform",
+	"description": "Platform For Yii PHP Framework Version 2",
+	"keywords": ["yii", "platform"],
+	"type": "library",
+	"license": "BSD-3-Clause",
+        "support": {
+		"email": "imaliy.filsh@gmail.com",
+		"source": "https://github.com/filsh/yii2-platform"
+	},
+	"authors": [
+		{
+			"name": "Igor Maliy",
+			"email": "imaliy.filsh@gmail.com",
+			"role": "Core platform development"
+		}
+	],
+	"require": {
+                "yiisoft/yii2": "*"
+	},
+	"autoload": {
+		"psr-0": { "yii\\platform\\": "" }
+	},
+	"target-dir": "yii/platform"
+}
