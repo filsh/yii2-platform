@@ -1,2 +1,2 @@
-yii-platform
+yii2-platform
 ============
