@@ -19,8 +19,11 @@ class FileHelper extends \yii\helpers\FileHelper
     public static function loadFile($fileUrl, $options = [])
     {
 //        $file = static::createUniqueFile(isset($options['destDir']) ? $options['destDir'] : null);
-//        $handle = @fopen($file, 'w');
+//        if($file === false) {
+//            return false;
+//        }
 //        
+//        $handle = @fopen($file, 'w');
 //        $options = array(
 //            CURLOPT_FILE    => $handle,
 //            CURLOPT_TIMEOUT => 10 * 60,
@@ -31,15 +34,17 @@ class FileHelper extends \yii\helpers\FileHelper
 //        curl_setopt_array($ch, $options);
 //        curl_exec($ch);
 //        fclose($handle);
-        $file = '/home/igor/www/yii2-app-platform/console/runtime/updater/52b0ca212de87_1387317793';
+        $file = '/var/www/yii2-app-platform/console/runtime/updater/52b1b811a156d_1387378705';
         if (isset($options['callback'])) {
             $result = call_user_func($options['callback'], $file);
             if (is_bool($result)) {
                 return $result;
             }
+        } else {
+            return $file;
         }
         
-        return $file;
+        return false;
     }
     
     public static function createUniqueFile($dst = null)
@@ -55,7 +60,7 @@ class FileHelper extends \yii\helpers\FileHelper
         $file = $dst.'/'.uniqid().'_'.time();
         
         if(!touch($file)) {
-            throw new Exception('File not created.');
+            return false;
         }
         
         return $file;

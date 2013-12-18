@@ -16,7 +16,7 @@ abstract class BaseUpdater extends Component
     {
         return [
             'log' => [
-                'class' => 'yii\platform\console\behaviors\Log',
+                'class' => 'yii\platform\behaviors\Log',
             ],
         ];
     }

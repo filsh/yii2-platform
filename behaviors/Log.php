@@ -1,6 +1,6 @@
 <?php
 
-namespace yii\platform\console\behaviors;
+namespace yii\platform\behaviors;
 
 use yii\base\Behavior;
 

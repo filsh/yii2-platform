@@ -29,6 +29,9 @@ class GeoLocations extends \yii\db\ActiveRecord
                     self::EVENT_BEFORE_UPDATE => 'update_time',
                 ],
             ],
+            'batchCommand' => [
+                'class' => 'yii\platform\behaviors\BatchCommand'
+            ]
         ];
     }
     
@@ -73,10 +76,10 @@ class GeoLocations extends \yii\db\ActiveRecord
         ];
     }
     
-    public static function loadCsvFile($file)
+    public function applyCsvFile($file)
     {
         if(!file_exists($file)) {
-            throw new Exception('CSV Location source file is not exists.');
+            throw new Exception('Source CSV file is not exist.');
         }
         
         $columns = ['id', 'country', 'region', 'city', 'postal', 'latitude', 'longitude', 'create_time', 'update_time'];
@@ -84,7 +87,7 @@ class GeoLocations extends \yii\db\ActiveRecord
         $keys = [];
         if (($handle = fopen($file, 'r')) !== false) {
             while (($data = fgetcsv($handle, 1000, ',')) !== false) {
-                if(intval($data[0]) === 0) {
+                if(!isset($data[0]) || intval($data[0]) === 0) {
                     continue;
                 }
                 
@@ -101,33 +104,17 @@ class GeoLocations extends \yii\db\ActiveRecord
                     time()
                 ];
                 
-                if(count($rows) === 1000) {
-                    self::batchReplace($keys, $columns, $rows);
+                if(count($rows) === $this->maxExecuteRows) {
+                    $this->batchUpdate($columns, $rows, ['id' => $keys]);
                     $keys = $rows = [];
                 }
             }
             
             if(count($rows) > 0) {
-                self::batchReplace($keys, $columns, $rows);
+                $this->batchUpdate($columns, $rows, ['id' => $keys]);
             }
             
             fclose($handle);
-        }
-    }
-    
-    public static function batchReplace($keys, $columns, $rows)
-    {
-        $keys = is_array($keys) ? $keys : [$keys];
-        $connection = self::getDb();
-        $transaction = $connection->beginTransaction();
-        
-        try {
-            $connection->createCommand()->delete(self::tableName(), ['id' => $keys])->execute();
-            $connection->createCommand()->batchInsert(self::tableName(), $columns, $rows)->execute();
-            $transaction->commit();
-        } catch (yii\db\Exception $e) {
-            $transaction->rollback();
-            throw $e;
         }
     }
 }
