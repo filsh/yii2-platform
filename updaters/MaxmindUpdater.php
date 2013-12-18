@@ -4,54 +4,64 @@ namespace yii\platform\updaters;
 
 use yii\platform\Platform;
 use yii\platform\helpers\FileHelper;
+use yii\platform\geo\models\GeoLocations;
 use yii\base\Exception;
 
 class MaxmindUpdater extends BaseUpdater
 {
+    const CSV_FILE_LOCATION = 'GeoLiteCity-Location.csv';
+    const CSV_FILE_BLOCKS = 'GeoLiteCity-Blocks.csv';
+    
     public $sourceFile;
     
-    private $_csvFiles;
-    
-    private $_write_rows = 1000;
-    
-    public function init()
-    {
-        parent::init();
-        $this->tmpPath = Platform::getAlias($this->tmpPath);
-        if (!is_dir($this->tmpPath)) {
-            FileHelper::createDirectory($this->tmpPath, $this->tmpDirMode, true);
-        }
-    }
-    /**
-     * Загружает файлы данных в формате csv
-     * 
-     * @param array $csvFiles
-     * @throws AppException
-     */
-    public function loadCsvFiles(array $csvFiles)
-    {
-        if(empty($csvFiles['csvLocationsFile']) || empty($csvFiles['csvBlocksFile'])) {
-            throw new AppException('Not found source files.');
-        }
-
-        $this->_csvFiles = $csvFiles;
-    }
-    
-    /**
-     * Запускает обработку загруженных данных
-     */
     public function run()
-    {var_dump(1);return;
-        $this->LogBehavior->addLog('process');
+    {
+        $this->addLog('process');
         
-        $this->processLocationsFile($this->_csvFiles['csvLocationsFile']);
-        $this->processBlocksFile($this->_csvFiles['csvBlocksFile']);
+        FileHelper::loadFile($this->sourceFile, [
+            'destDir' => Platform::getAlias($this->tmpPath),
+            'callback' => [$this, 'resolveArchiveZip']
+        ]);
         
-        $this->LogBehavior->addLog('process');
+        $this->addLog('process');
     }
     
-    protected function processLocationsFile($csvFile)
+    public function resolveArchiveZip($file)
     {
+        if(!class_exists('\ZipArchive')) {
+            throw new Exception('Not exist ZipArchive class, your must install PECL zip library.');
+        }
+        
+//        $z = new \ZipArchive();
+//        $z->open($file);
+//        $z->extractTo($this->tmpPath);
+//        $z->close();
+        
+        $filesList = FileHelper::findFiles($this->tmpPath, [
+            'recursive' => true,
+            'filter' => [$this, 'resolveArchiveCsv']
+        ]);
+        
+        $this->process($filesList);
+    }
+    
+    public function resolveArchiveCsv($file)
+    {
+        $files = [self::CSV_FILE_LOCATION, self::CSV_FILE_BLOCKS];
+        foreach($files as $name) {
+            if(!(FileHelper::filterPath($file, ['only' => [$name]]))) {
+                continue;
+            }
+            switch($name) {
+                case self::CSV_FILE_LOCATION:
+                    GeoLocations::loadCsvFile($file);
+                    break;
+                case self::CSV_FILE_BLOCKS:
+                    var_dump(2);
+                    break;
+            }
+        }
+        return;
         if(!file_exists($csvFile)) {
             throw new AppException('CSV Locations source file is not exists.');
         }
@@ -82,7 +92,7 @@ class MaxmindUpdater extends BaseUpdater
                     'geo_locations_longitude' => $longitude
                 );
                 
-                if(count($raw) == $this->_write_rows) {
+                if(count($raw) === 1000) {
                     GeoLocations::loadRawData($raw);
                     $raw = array();
                 }
@@ -117,7 +127,7 @@ class MaxmindUpdater extends BaseUpdater
                     'geo_ipblocks_locations_id' => (int) $data[2]
                 );
                 
-                if(count($raw) == $this->_write_rows) {
+                if(count($raw) === 1000) {
                     GeoIpBlocks::loadRawData($raw);
                     $raw = array();
                 }
@@ -128,66 +138,5 @@ class MaxmindUpdater extends BaseUpdater
         }
         
         $this->LogBehavior->addLog('Processed Blocks File', sprintf('%s rows', $rows));
-    }
-    
-    protected function loadSourceFile($sourceFile, $destCsvFile)
-    {
-        $destFolder = dirname($destCsvFile);
-
-        if(!is_dir($destFolder) && !mkdir($destFolder, 0777)) {
-            throw new Exception('Unable to create destination folder.');
-        }
-
-        $destFile = @fopen($destCsvFile, 'w');
-
-        if(!is_resource($destFile)) {
-            throw new Exception('Unable to create destination resource.');
-        }
-
-        $options = array(
-            CURLOPT_FILE    => $destFile,
-            CURLOPT_TIMEOUT =>  10*60,
-            CURLOPT_URL     => $sourceFile,
-        );
-
-        $ch = curl_init();
-        curl_setopt_array($ch, $options);
-        curl_exec($ch);
-
-        $z = new ZipArchive();
-        $z->open($destCsvFile);
-        $z->extractTo($destFolder);
-        $z->close();
-
-        // ищем нужные файлы
-        $result = array(
-            'csvLocationsFile' => null,
-            'csvBlocksFile' => null
-        );
-
-        foreach (scandir($destFolder) as $item) {
-            if ($item == '.' || $item == '..') {
-                continue;
-            }
-
-            if(is_dir($destFolder . '/' . $item)) {
-                $csvLocationsFile = $destFolder . '/' . $item . '/GeoLiteCity-Location.csv';
-                $csvBlocksFile = $destFolder . '/' . $item . '/GeoLiteCity-Blocks.csv';
-
-                if(file_exists($csvLocationsFile)) {
-                    $result['csvLocationsFile'] = $csvLocationsFile;
-                }
-
-                if(file_exists($csvBlocksFile)) {
-                    $result['csvBlocksFile'] = $csvBlocksFile;
-                }
-            }
-        }
-
-        if(empty($result['csvLocationsFile']) || empty($result['csvBlocksFile'])) {
-            throw new AppException('Not found source files.');
-        }
-
-        return $result;
     }
 }

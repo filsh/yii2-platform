@@ -16,10 +16,11 @@ class m130524_200441_geo_locations extends \yii\db\Migration
             'country' => Schema::TYPE_STRING . '(2) NOT NULL',
             'region' => Schema::TYPE_STRING . '(2) NOT NULL DEFAULT ""',
             'city' => Schema::TYPE_STRING . '(255) NOT NULL DEFAULT ""',
-            'latitude' => Schema::TYPE_DECIMAL . '(10,7) NOT NULL',
-            'longitude' => Schema::TYPE_DECIMAL . '(10,7) NOT NULL',
+            'postal' => Schema::TYPE_STRING . '(12) NOT NULL DEFAULT ""',
+            'latitude' => Schema::TYPE_DECIMAL . '(10,7) DEFAULT NULL',
+            'longitude' => Schema::TYPE_DECIMAL . '(10,7) DEFAULT NULL',
             'create_time' => Schema::TYPE_INTEGER.' NOT NULL',
-            'update_time' => Schema::TYPE_INTEGER.' NOT NULL',
+            'update_time' => Schema::TYPE_INTEGER.' NOT NULL'
         ], $tableOptions);
     }
 
