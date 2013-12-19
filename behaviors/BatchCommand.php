@@ -13,7 +13,7 @@ class BatchCommand extends Behavior
     public $maxExecuteRows = 1000;
     
     /**
-     * Creates a batch UPDATE command.
+     * Creates a batch replace rows command.
      * For example,
      *
      * ~~~
@@ -38,16 +38,16 @@ class BatchCommand extends Behavior
      * Note that the values in each row must match the corresponding column names.
      *
      * @param array $columns the column names
-     * @param array $rows the rows to be batch updated into the table
+     * @param array $rows the rows to be batch replace into the table
      * @param array|string $condition the condition that will be put in the WHERE part. That will be put in the WHERE part.
      * Please refer to [[Query::where()]] on how to specify condition.
      * @param array $params the parameters to be bound to the condition
      * @return Owner the owner object itself
      */
-    public function batchUpdate($columns, $rows, $condition, $params = [])
+    public function batchReplace($columns, $rows, $condition, $params = [])
     {
         if(count($rows) > $this->maxExecuteRows) {
-            throw new yii\base\Exception('Too many rows for process.');
+            throw new yii\base\Exception('Too many rows for replace.');
         }
         
         $tableName = $this->owner->tableName();

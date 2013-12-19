@@ -48,4 +48,12 @@ class GeoLocationPoint extends \yii\db\ActiveRecord
             'point' => 'Point',
         ];
     }
+    
+    /**
+     * @return \yii\db\ActiveRelation
+     */
+    public function getLocation()
+    {
+        return $this->hasOne(GeoLocations::className(), ['id' => 'id']);
+    }
 }

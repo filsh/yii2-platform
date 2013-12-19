@@ -76,45 +76,11 @@ class GeoLocations extends \yii\db\ActiveRecord
         ];
     }
     
-    public function applyCsvFile($file)
+    /**
+     * @return \yii\db\ActiveRelation
+     */
+    public function getPoint()
     {
-        if(!file_exists($file)) {
-            throw new Exception('Source CSV file is not exist.');
-        }
-        
-        $columns = ['id', 'country', 'region', 'city', 'postal', 'latitude', 'longitude', 'create_time', 'update_time'];
-        $rows = [];
-        $keys = [];
-        if (($handle = fopen($file, 'r')) !== false) {
-            while (($data = fgetcsv($handle, 1000, ',')) !== false) {
-                if(!isset($data[0]) || intval($data[0]) === 0) {
-                    continue;
-                }
-                
-                $keys[] = (int) $data[0];
-                $rows[] = [
-                    (int) $data[0],
-                    trim($data[1]),
-                    trim($data[2]),
-                    trim($data[3]),
-                    trim($data[4]),
-                    (float) $data[5],
-                    (float) $data[6],
-                    time(),
-                    time()
-                ];
-                
-                if(count($rows) === $this->maxExecuteRows) {
-                    $this->batchUpdate($columns, $rows, ['id' => $keys]);
-                    $keys = $rows = [];
-                }
-            }
-            
-            if(count($rows) > 0) {
-                $this->batchUpdate($columns, $rows, ['id' => $keys]);
-            }
-            
-            fclose($handle);
-        }
+        return $this->hasOne(GeoLocationPoint::className(), ['id' => 'id']);
     }
 }
