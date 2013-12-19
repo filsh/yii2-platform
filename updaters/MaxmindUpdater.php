@@ -5,6 +5,8 @@ namespace yii\platform\updaters;
 use yii\platform\helpers\FileHelper;
 use yii\platform\geo\models\GeoLocations;
 use yii\platform\geo\models\GeoLocationBlock;
+use yii\platform\geo\models\GeoLocationPoint;
+use yii\db\Expression;
 use yii\base\Exception;
 
 class MaxmindUpdater extends BaseUpdater
@@ -22,6 +24,8 @@ class MaxmindUpdater extends BaseUpdater
             'destDir' => $this->tmpPath,
             'onLoad' => [$this, 'resolveZip']
         ]);
+        
+        FileHelper::removeDirectory($this->tmpPath);
     }
     
     public function resolveZip($zipFile)
@@ -50,37 +54,36 @@ class MaxmindUpdater extends BaseUpdater
                 $this->resolveCsv($name, $file);
             }
         }
-        unlink($zipFile);
     }
     
     protected function resolveCsv($name, $file)
     {
         switch($name) {
             case self::CSV_FILE_LOCATION:
-                $this->applyLocationFile($file);
+                $this->applyLocationCsv($file);
                 break;
             case self::CSV_FILE_BLOCKS:
-                $this->applyBlockFile($file);
+                $this->applyBlockCsv($file);
                 break;
         }
-        
-        unlink($file);
     }
     
-    protected function applyLocationFile($file)
+    protected function applyLocationCsv($file)
     {
-        $model = new GeoLocations();
-        $columns = array_keys($model->attributeLabels());
-        $rows = [];
-        $keys = [];
+        $locationColumns = ['id', 'country', 'region', 'city', 'postal', 'latitude', 'longitude', 'create_time', 'update_time'];
+        $licationDuplicates = ['country', 'region', 'city', 'postal', 'latitude', 'longitude'];
+        $pointColumns = ['id', 'point'];
+        $pointDuplicates = ['point'];
+        
+        $locationRows = [];
+        $pointRows = [];
         if (($handle = fopen($file, 'r')) !== false) {
             while (($data = fgetcsv($handle, 1000, ',')) !== false) {
                 if(!isset($data[0]) || intval($data[0]) === 0) {
                     continue;
                 }
                 
-                $keys[] = (int) $data[0];
-                $rows[] = [
+                $locationRows[] = [
                     (int) $data[0],
                     trim($data[1]),
                     trim($data[2]),
@@ -91,50 +94,55 @@ class MaxmindUpdater extends BaseUpdater
                     time(),
                     time()
                 ];
+                $pointRows[] = [
+                    (int) $data[0],
+                    new Expression('GeomFromText("POINT(' . $data[5] . ' ' . $data[6] . ')")')
+                ];
                 
-                if(count($rows) === $model->maxExecuteRows) {
-                    $model->batchReplace($columns, $rows, ['id' => $keys]);
-//                    $model->batchReplace($columns, $rows, ['id' => $keys]);
-                    $keys = $rows = [];
+                if(count($locationRows) === $this->maxExecuteRows) {
+                    $this->batchInsertDuplicate(GeoLocations::tableName(), $locationColumns, $locationRows, $licationDuplicates)->execute();
+                    $this->batchInsertDuplicate(GeoLocationPoint::tableName(), $pointColumns, $pointRows, $pointDuplicates)->execute();
+                    
+                    $locationRows = [];
+                    $pointRows = [];
                 }
             }
             
-            if(count($rows) > 0) {
-                $model->batchReplace($columns, $rows, ['id' => $keys]);
-//                $model->batchReplace($columns, $rows, ['id' => $keys]);
+            if(count($locationRows) > 0) {
+                $this->batchInsertDuplicate(GeoLocations::tableName(), $locationColumns, $locationRows, $licationDuplicates)->execute();
+                $this->batchInsertDuplicate(GeoLocationPoint::tableName(), $pointColumns, $pointRows, $pointDuplicates)->execute();
             }
             
             fclose($handle);
         }
     }
     
-    public function applyBlockFile($file)
+    public function applyBlockCsv($file)
     {
-        $model = new GeoLocationBlock();
-        $columns = array_keys($model->attributeLabels());
+        $columns = ['id', 'start', 'end'];
+        $update = ['id', 'start'];
+        
         $rows = [];
-        $keys = [];
         if (($handle = fopen($file, 'r')) !== false) {
             while (($data = fgetcsv($handle, 1000, ',')) !== false) {
                 if(!isset($data[2]) || intval($data[2]) === 0) {
                     continue;
                 }
                 
-                $keys[] = (int) $data[1];
                 $rows[] = [
                     (int) $data[2],
                     (int) $data[0],
                     (int) $data[1]
                 ];
                 
-                if(count($rows) === $model->maxExecuteRows) {
-                    $model->batchReplace($columns, $rows, ['end' => $keys]);
-                    $keys = $rows = [];
+                if(count($rows) === $this->maxExecuteRows) {
+                    $this->batchInsertDuplicate(GeoLocationBlock::tableName(), $columns, $rows, $update)->execute();
+                    $rows = [];
                 }
             }
             
             if(count($rows) > 0) {
-                $model->batchReplace($columns, $rows, ['end' => $keys]);
+                $this->batchInsertDuplicate(GeoLocationBlock::tableName(), $columns, $rows, $update)->execute();
             }
             
             fclose($handle);

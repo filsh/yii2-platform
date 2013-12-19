@@ -2,6 +2,7 @@
 
 namespace yii\platform\geo\models;
 
+use yii\platform\helpers\GeoHelper;
 use yii\base\Exception;
 
 /**
@@ -19,6 +20,14 @@ use yii\base\Exception;
  */
 class GeoLocations extends \yii\db\ActiveRecord
 {
+    public $distance;
+    
+    public $point;
+    
+    public $start;
+    
+    public $end;
+    
     public function behaviors()
     {
         return [
@@ -28,9 +37,6 @@ class GeoLocations extends \yii\db\ActiveRecord
                     self::EVENT_BEFORE_INSERT => ['create_time', 'update_time'],
                     self::EVENT_BEFORE_UPDATE => 'update_time',
                 ],
-            ],
-            'batchCommand' => [
-                'class' => 'yii\platform\behaviors\BatchCommand'
             ]
         ];
     }
@@ -82,5 +88,48 @@ class GeoLocations extends \yii\db\ActiveRecord
     public function getPoint()
     {
         return $this->hasOne(GeoLocationPoint::className(), ['id' => 'id']);
+    }
+    
+    /**
+     * @param ActiveQuery $query
+     * @param type $lat
+     * @param type $lng
+     * @param type $dist
+     * @return type
+     * @throws Exception
+     */
+    public static function fromPoint($query, $lat, $lng, $dist = 30)
+    {
+        if (!is_float($lat) || !is_float($lng)) {
+            throw new Exception('Location coords is not valid.');
+        }
+        
+        $query->from(self::tableName() . ' l');
+        $query->innerJoin(GeoLocationPoint::tableName() . ' p', 'l.id=p.id');
+        $query->select('*, ' . GeoHelper::createDistanceCondition($lat, $lng) . ' AS distance');
+        $query->andWhere(GeoHelper::createPoligonCriteria($lat, $lng, $dist));
+        $query->orderBy('distance');
+    }
+    
+    /**
+     * @param type $query
+     * @param type $addr
+     * @throws AppException
+     */
+    public static function fromBlock($query, $addr)
+    {
+        if (!is_scalar($addr)) {
+            throw new AppException('Location address is not valid.');
+        }
+        
+        $block = GeoLocationBlock::find()
+                ->where(':addr BETWEEN start AND end', [':addr' => ip2long($addr)])
+                ->one();
+        
+        if($block !== null) {
+            $query->andWhere('id = :id', [':id' => $block->id]);
+        } else {
+            $query->andWhere(0);
+        }
     }
 }

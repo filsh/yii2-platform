@@ -13,15 +13,6 @@ namespace yii\platform\geo\models;
  */
 class GeoLocationBlock extends \yii\db\ActiveRecord
 {
-    public function behaviors()
-    {
-        return [
-            'batchCommand' => [
-                'class' => 'yii\platform\behaviors\BatchCommand'
-            ]
-        ];
-    }
-    
     /**
      * @inheritdoc
      */

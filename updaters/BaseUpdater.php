@@ -18,6 +18,9 @@ abstract class BaseUpdater extends Component
             'log' => [
                 'class' => 'yii\platform\behaviors\Log',
             ],
+            'batchCommand' => [
+                'class' => 'yii\platform\behaviors\BatchCommand'
+            ]
         ];
     }
     
@@ -28,6 +31,11 @@ abstract class BaseUpdater extends Component
         if (!is_dir($this->tmpPath)) {
             FileHelper::createDirectory($this->tmpPath, $this->tmpDirMode, true);
         }
+    }
+    
+    public function getDb()
+    {
+        return Platform::$app->getDb();
     }
     
     abstract public function run();

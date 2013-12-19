@@ -3,7 +3,9 @@
 namespace yii\platform\geo;
 
 use yii\platform\Platform;
+use yii\platform\geo\models\GeoLocations;
 use yii\base\Component;
+use yii\base\Exception;
 
 class Locator extends Component
 {
@@ -23,77 +25,72 @@ class Locator extends Component
      * User remote latitude
      * @var float
      */
-    protected $remoteLatitude;
+    protected $latitude;
     
     /**
      * User remote longitude
      * @var float
      */
-    protected $remoteLongitude;
+    protected $longitude;
     
     /**
      * User remote address
      * @var string
      */
-    protected $remoteAddress;
+    protected $address;
+    
+    private $_location;
     
     public function init()
     {
         parent::init();
         
-        $this->setRemoteAddress();
-        $this->setRemoteCoords();
+        $request =  Platform::$app->getRequest();
+        $this->address = $request->getUserIP();
+        $this->latitude = (float) $request->get($this->latitudeParamName);
+        $this->longitude = (float) $request->get($this->longitudeParamName);
+        
+        // hack for localhost
+        if($this->address === '127.0.0.1') {
+            $this->address = '217.146.245.0'; // id = 220
+        }
     }
     
     /**
-     * Resolve location data
-     * 
-     * @return object GeoLocations
+     * Find Location by geografic coordinates
+     * @param type $lat
+     * @param type $lng
+     * @return type
+     * @throws AppException
      */
-    protected function resolve()
+    protected function resolveByCoords($lat, $lng)
     {
-        if($this->_mGeoLocations == null) {
-            if($this->getIsValidLocation($this->remoteLatitude, $this->remoteLongitude)) {
-                $mGeoLocations = $this->findByCoordsLocation($this->remoteLatitude, $this->remoteLongitude);
-                $this->log(null, $this->remoteLatitude, $this->remoteLongitude);
-            } else {
-                $mGeoLocations = $this->findByRemoteAddress($this->remoteAddress);
-                $this->log($this->remoteAddress);
-            }
-            
-            $this->_mGeoLocations = $mGeoLocations;
+        if (!$this->getIsValidLocation($lat, $lng)) {
+            throw new Exception('Latitude or longitude is not valid.');
         }
         
-        return $this->_mGeoLocations;
+        return GeoLocations::find()
+                ->fromPoint($lat, $lng)
+                ->one();
     }
     
     /**
-     * Set user remote address
-     * @return void
+     * Find location by remote address
+     * @param type $address
+     * @return type
      */
-    protected function setRemoteAddress()
+    protected function resolveByAddress($addr)
     {
-        $request = Platform::$app->getRequest();
-        $this->remoteAddress = $request->getUserIP();
-    }
-    
-    /**
-     * Set user coords info
-     * @return void
-     */
-    protected function setRemoteCoords()
-    {
-        $request = Platform::$app->getRequest();
-        $this->remoteLatitude = (float) $request->get($this->latitudeParamName);
-        $this->remoteLongitude = (float) $request->get($this->longitudeParamName);
+        return GeoLocations::find()
+                ->fromBlock($addr)
+                ->one();
     }
     
     /**
      * Return if the location coordinates is valid
-     * 
      * @return boolean
      */
-    public function getIsValidLocation($latitude, $longitude)
+    protected function getIsValidLocation($latitude, $longitude)
     {
         if (empty($latitude)
                 || empty($longitude)
@@ -106,46 +103,91 @@ class Locator extends Component
     }
     
     /**
+     * Get location data
+     * @return object GeoLocations
+     */
+    public function getLocation()
+    {
+        if($this->_location == null) {
+            if($this->getIsValidLocation($this->latitude, $this->longitude)) {
+                $this->_location = $this->resolveByCoords($this->latitude, $this->longitude);
+            } else {
+                $this->_location = $this->resolveByAddress($this->address);
+            }
+        }
+        
+        return $this->_location;
+    }
+    
+    /**
      * Return country code in format iso2
-     * 
      * @return type
      */
     public function getCountry()
     {
-        return $this->getSourceData()->geo_locations_country;
+        $location = $this->getLocation();
+        return $location !== null ? $location->country : null;
+    }
+    
+    /**
+     * Return region
+     * @return type
+     */
+    public function getRegion()
+    {
+        $location = $this->getLocation();
+        return $location !== null ? $location->region : null;
     }
     
     /**
      * Return city name
-     * 
      * @return type
      */
     public function getCity()
     {
-        return $this->getSourceData()->geo_locations_city;
+        $location = $this->getLocation();
+        return $location !== null ? $location->city : null;
+    }
+    
+    /**
+     * Return postal code
+     * @return type
+     */
+    public function getPostal()
+    {
+        $location = $this->getLocation();
+        return $location !== null ? $location->postal : null;
     }
     
     /**
      * Return geografic latitude
-     * 
      * @return type
      */
     public function getLatitude()
     {
-        return $this->remoteLatitude
-                ? $this->remoteLatitude
-                : $this->getSourceData()->geo_locations_latitude;
+        $location = $this->getLocation();
+        if($location !== null && $location->latitude) {
+            $latitude = $location->latitude;
+        } else {
+            $latitude = $this->latitude;
+        }
+        
+        return (float) $latitude;
     }
     
     /**
      * Return geografic longitude
-     * 
      * @return type
      */
     public function getLongitude()
     {
-        return $this->remoteLongitude
-                ? $this->remoteLongitude
-                : $this->getSourceData()->geo_locations_longitude;
+        $location = $this->getLocation();
+        if($location !== null && $location->longitude) {
+            $longitude = $location->longitude;
+        } else {
+            $longitude = $this->longitude;
+        }
+        
+        return (float) $longitude;
     }
 }
