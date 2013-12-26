@@ -22,6 +22,7 @@ class Application extends \yii\web\Application
         parent::registerCoreComponents();
         
         $this->setComponents([
+            'i18n' => ['class' => 'yii\platform\i18n\I18N'],
             'geoLocator' => ['class' => 'yii\platform\geo\Locator'],
         ]);
     }
