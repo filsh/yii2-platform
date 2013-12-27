@@ -5,18 +5,6 @@ namespace yii\platform\console;
 class Application extends \yii\console\Application
 {
     /**
-     * Returns the configuration of the built-in commands.
-     * @return array the configuration of the built-in commands.
-     */
-    public function coreCommands()
-    {
-        return array_merge(parent::coreCommands(), [
-            'migrate' => 'yii\platform\console\controllers\MigrateController',
-            'updater' => 'yii\platform\console\controllers\UpdaterController',
-        ]);
-    }
-    
-    /**
      * Registers the core application components.
      * @see setComponents
      */
@@ -25,6 +13,18 @@ class Application extends \yii\console\Application
         parent::registerCoreComponents();
         $this->setComponents([
             'i18n' => ['class' => 'yii\platform\i18n\I18N']
+        ]);
+    }
+    
+    /**
+     * Returns the configuration of the built-in commands.
+     * @return array the configuration of the built-in commands.
+     */
+    public function coreCommands()
+    {
+        return array_merge(parent::coreCommands(), [
+            'migrate' => 'yii\platform\console\controllers\MigrateController',
+            'updater' => 'yii\platform\console\controllers\UpdaterController',
         ]);
     }
     
