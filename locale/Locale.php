@@ -58,7 +58,7 @@ class Locale extends \yii\base\Component
             return $default;
         }
         
-        return $this->formatLanguage($language, $default);
+        return $this->format($language, $default);
     }
     
     /**
@@ -67,7 +67,7 @@ class Locale extends \yii\base\Component
      * @param type $default
      * @return type
      */
-    public function formatLanguage($language, $default = 'en-US')
+    public function format($language, $default = 'en-US')
     {
         $parts = explode('-', str_replace('_', '-', mb_strtolower($language)));
         
