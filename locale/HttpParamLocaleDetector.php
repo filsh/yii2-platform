@@ -2,7 +2,7 @@
 
 namespace yii\platform\locale;
 
-use \yii\platform\Platform;
+use \yii\platform\P;
 
 class HttpParamLocaleDetector implements LocaleDetector
 {
@@ -10,7 +10,7 @@ class HttpParamLocaleDetector implements LocaleDetector
     
     public function detect($languages = array())
     {
-        $language = Platform::$app->getRequest()->get($this->paramLang);
+        $language = P::$app->getRequest()->get($this->paramLang);
         if(in_array($language, $languages)) {
             return $language;
         }

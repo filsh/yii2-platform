@@ -2,7 +2,7 @@
 
 namespace yii\platform\updaters;
 
-use yii\platform\Platform;
+use yii\platform\P;
 use yii\platform\helpers\FileHelper;
 use yii\base\Component;
 
@@ -27,7 +27,7 @@ abstract class BaseUpdater extends Component
     public function init()
     {
         parent::init();
-        $this->tmpPath = Platform::getAlias($this->tmpPath);
+        $this->tmpPath = P::getAlias($this->tmpPath);
         if (!is_dir($this->tmpPath)) {
             FileHelper::createDirectory($this->tmpPath, $this->tmpDirMode, true);
         }
@@ -35,7 +35,7 @@ abstract class BaseUpdater extends Component
     
     public function getDb()
     {
-        return Platform::$app->getDb();
+        return P::$app->getDb();
     }
     
     abstract public function run();

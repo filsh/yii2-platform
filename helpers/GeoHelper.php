@@ -2,7 +2,7 @@
 
 namespace yii\platform\helpers;
 
-use yii\platform\Platform;
+use yii\platform\P;
 
 class GeoHelper
 {
@@ -57,7 +57,7 @@ class GeoHelper
      */
     public static function createPoligonCriteria($lat, $lng, $dist, $pointColumn = 'point')
     {
-        $db = Platform::$app->getDb();
+        $db = P::$app->getDb();
         $pointColumn = $db->quoteColumnName($pointColumn);
         
         $sq = self::createPoligonArea($lat, $lng, $dist);
@@ -87,7 +87,7 @@ class GeoHelper
      */
     public static function createDistanceCondition($lat, $lng, $latColumn = 'latitude', $lngColumn = 'longitude')
     {
-        $db = Platform::$app->getDb();
+        $db = P::$app->getDb();
         $latColumn = $db->quoteColumnName($latColumn);
         $lngColumn = $db->quoteColumnName($lngColumn);
         

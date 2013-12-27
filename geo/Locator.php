@@ -2,7 +2,7 @@
 
 namespace yii\platform\geo;
 
-use yii\platform\Platform;
+use yii\platform\P;
 use yii\platform\geo\models\GeoLocations;
 use yii\base\Component;
 use yii\base\Exception;
@@ -45,7 +45,7 @@ class Locator extends Component
     {
         parent::init();
         
-        $request =  Platform::$app->getRequest();
+        $request =  P::$app->getRequest();
         $this->address = $request->getUserIP();
         $this->latitude = (float) $request->get($this->latitudeParamName);
         $this->longitude = (float) $request->get($this->longitudeParamName);

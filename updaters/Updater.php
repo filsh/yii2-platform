@@ -2,7 +2,7 @@
 
 namespace yii\platform\updaters;
 
-use yii\platform\Platform;
+use yii\platform\P;
 use yii\helpers\ArrayHelper;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -17,7 +17,7 @@ class Updater extends Component
     public function init()
     {
         parent::init();
-        $this->updaters = ArrayHelper::merge(Platform::$app->coreUpdaters(), $this->updaters);
+        $this->updaters = ArrayHelper::merge(P::$app->coreUpdaters(), $this->updaters);
     }
     
     /**
@@ -57,7 +57,7 @@ class Updater extends Component
             } else {
                 throw new InvalidConfigException('Object updater configuration is invalid or not found.');
             }
-            $updater = Platform::createObject($config);
+            $updater = P::createObject($config);
         }
         return $updater;
     }

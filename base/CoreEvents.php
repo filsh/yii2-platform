@@ -6,7 +6,7 @@ use yii\base\Behavior;
 use yii\base\Event;
 use yii\i18n\MissingTranslationEvent;
 use yii\helpers\ArrayHelper;
-use yii\platform\Platform;
+use yii\platform\P;
 
 class CoreEvents extends Behavior
 {
@@ -20,12 +20,12 @@ class CoreEvents extends Behavior
     
     public function beforeRequest(Event $event)
     {
-        Platform::$app->language = Platform::$app->getLocale()->detectLanguage();
+        P::$app->language = P::$app->getLocale()->detectLanguage();
     }
     
     public function missingTranslation(MissingTranslationEvent $event)
     {
-        Platform::warning(sprintf(
+        P::warning(sprintf(
             'Missing translation message "%s:%s:%s"', $event->category, $event->message, $event->language), __CLASS__);
     }
 }

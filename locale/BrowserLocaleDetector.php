@@ -2,13 +2,13 @@
 
 namespace yii\platform\locale;
 
-use \yii\platform\Platform;
+use \yii\platform\P;
 
 class BrowserLocaleDetector implements LocaleDetector
 {
     public function detect($languages = [])
     {
-        $request = Platform::$app->getRequest();
+        $request = P::$app->getRequest();
         return strtolower($request->getPreferredLanguage($languages));
     }    
 }

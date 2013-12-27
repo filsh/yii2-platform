@@ -3,7 +3,7 @@
 namespace yii\platform\locale;
 
 use yii\base\InvalidConfigException;
-use yii\platform\Platform;
+use yii\platform\P;
 
 class Locale extends \yii\base\Component
 {
@@ -33,7 +33,7 @@ class Locale extends \yii\base\Component
         }
         
         if(!isset($this->detectors[$class])) {
-            $this->detectors[$class] = Platform::createObject($detector);
+            $this->detectors[$class] = P::createObject($detector);
         }
         
         return $this->detectors[$class];
@@ -83,7 +83,7 @@ class Locale extends \yii\base\Component
         if(isset(self::$languageMap[$language])) {
             $language = self::$languageMap[$language];
         } else {
-            Platform::warning(sprintf('Formatted language \'%s\' is not supported, reset to default \'%s\'', $language, $default), __CLASS__);
+            P::warning(sprintf('Formatted language \'%s\' is not supported, reset to default \'%s\'', $language, $default), __CLASS__);
             $language = $default;
         }
         
