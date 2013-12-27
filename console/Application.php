@@ -17,6 +17,18 @@ class Application extends \yii\console\Application
     }
     
     /**
+     * Registers the core application components.
+     * @see setComponents
+     */
+    public function registerCoreComponents()
+    {
+        parent::registerCoreComponents();
+        $this->setComponents([
+            'i18n' => ['class' => 'yii\platform\i18n\I18N']
+        ]);
+    }
+    
+    /**
      * Returns the configuration of the built-in updaters.
      * @return array the configuration of the built-in updaters.
      */
