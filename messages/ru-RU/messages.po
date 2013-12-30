@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: yii2-platform\n"
+"POT-Creation-Date: 2013-12-26 23:10+0300\n"
+"PO-Revision-Date: 2013-12-26 23:13+0300\n"
+"Last-Translator: Igor Maliy <imaliy.filsh@gmail.com>\n"
+"Language-Team:  <imaliy.filsh@gmail.com>\n"
+"Language: ru-RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: t:1c,2;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: /home/igor/www/yii2-app-platform/vendor/filsh/yii2-"
+"platform/yii/platform\n"
+
+#: /home/igor/www/yii2-app-platform/vendor/filsh/yii2-platform/yii/platform/web/Application.php:16
+msgctxt "platform"
+msgid "I am"
+msgstr "я"
+
+#: /home/igor/www/yii2-app-platform/vendor/filsh/yii2-platform/yii/platform/web/Application.php:17
+msgctxt "platform"
+msgid "I am a"
+msgstr "и яc"
+
+#: /home/igor/www/yii2-app-platform/vendor/filsh/yii2-platform/yii/platform/web/Application.php:18
+msgctxt "platform"
+msgid "I am a another"
+msgstr "сообщени"
