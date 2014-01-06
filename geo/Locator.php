@@ -4,6 +4,7 @@ namespace yii\platform\geo;
 
 use yii\platform\P;
 use yii\platform\geo\models\Locations;
+use yii\platform\geo\models\Timezones;
 use yii\base\Component;
 use yii\base\Exception;
 
@@ -134,7 +135,7 @@ class Locator extends Component
      * Return country code in format iso2
      * @return type
      */
-    public function getCountry()
+    public function getCountryCode()
     {
         $location = $this->getLocation();
         return $location !== null ? $location->country : null;
@@ -144,7 +145,7 @@ class Locator extends Component
      * Return region
      * @return type
      */
-    public function getRegion()
+    public function getRegionCode()
     {
         $location = $this->getLocation();
         return $location !== null ? $location->region : null;
@@ -204,6 +205,19 @@ class Locator extends Component
     
     public function getTimeZone()
     {
-        var_dump($this->getLocation());
+        $location = $this->getLocation();
+        if($location !== null && !empty($location->country) && !empty($location->region)) {
+            $mTimezones = Timezones::find()
+                ->where(
+                    'country = :country AND region = :region',
+                    [':country' => $location->country, ':region' => $location->region])
+                ->one();
+            
+            if($mTimezones !== null) {
+                return $mTimezones->timezone;
+            }
+        }
+        
+        return P::$app->getTimeZone();
     }
 }

@@ -20,9 +20,8 @@ class CoreEvents extends Behavior
     
     public function beforeRequest(Event $event)
     {
-        var_dump(P::$app->getGeoLocator()->getTimeZone());exit;
         P::$app->setLanguage(P::$app->getLocale()->detectLanguage());
-//        P::$app->setTimeZone(P::$app->getGeoLocator()->getTimeZone());
+        P::$app->setTimeZone(P::$app->getGeoLocator()->getTimeZone());
     }
     
     public function missingTranslation(MissingTranslationEvent $event)
