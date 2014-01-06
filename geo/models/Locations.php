@@ -6,7 +6,7 @@ use yii\platform\helpers\GeoHelper;
 use yii\base\Exception;
 
 /**
- * This is the model class for table "geo_locations".
+ * This is the model class for table "locations".
  *
  * @property integer $id
  * @property string $country
@@ -18,7 +18,7 @@ use yii\base\Exception;
  * @property integer $create_time
  * @property integer $update_time
  */
-class GeoLocations extends \yii\db\ActiveRecord
+class Locations extends \yii\db\ActiveRecord
 {
     public $distance;
     
@@ -46,7 +46,7 @@ class GeoLocations extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'geo_locations';
+        return 'locations';
     }
 
     /**
@@ -87,7 +87,7 @@ class GeoLocations extends \yii\db\ActiveRecord
      */
     public function getPoint()
     {
-        return $this->hasOne(GeoLocationPoint::className(), ['id' => 'id']);
+        return $this->hasOne(LocationPoint::className(), ['id' => 'id']);
     }
     
     /**
@@ -105,7 +105,7 @@ class GeoLocations extends \yii\db\ActiveRecord
         }
         
         $query->from(self::tableName() . ' l');
-        $query->innerJoin(GeoLocationPoint::tableName() . ' p', 'l.id=p.id');
+        $query->innerJoin(LocationPoint::tableName() . ' p', 'l.id=p.id');
         $query->select('*, ' . GeoHelper::createDistanceCondition($lat, $lng) . ' AS distance');
         $query->andWhere(GeoHelper::createPoligonCriteria($lat, $lng, $dist));
         $query->orderBy('distance');
@@ -122,7 +122,7 @@ class GeoLocations extends \yii\db\ActiveRecord
             throw new AppException('Location address is not valid.');
         }
         
-        $block = GeoLocationBlock::find()
+        $block = LocationBlock::find()
                 ->where(':addr BETWEEN start AND end', [':addr' => ip2long($addr)])
                 ->one();
         

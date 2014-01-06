@@ -2,7 +2,7 @@
 
 use yii\db\Schema;
 
-class m130524_200451_geo_location_point extends \yii\db\Migration
+class m130524_200451_location_point extends \yii\db\Migration
 {
     public function up()
     {
@@ -13,7 +13,7 @@ class m130524_200451_geo_location_point extends \yii\db\Migration
             throw new \Exception('Platform support only mysql database.');
         }
 
-        $this->createTable('geo_location_point', [
+        $this->createTable('location_point', [
             'id' => Schema::TYPE_INTEGER . '(10) unsigned NOT NULL PRIMARY KEY',
             'point' => 'point NOT NULL',
             'SPATIAL KEY (`point`)'
@@ -22,6 +22,6 @@ class m130524_200451_geo_location_point extends \yii\db\Migration
 
     public function down()
     {
-        $this->dropTable('geo_location_point');
+        $this->dropTable('location_point');
     }
 }

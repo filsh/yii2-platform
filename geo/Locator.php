@@ -3,7 +3,7 @@
 namespace yii\platform\geo;
 
 use yii\platform\P;
-use yii\platform\geo\models\GeoLocations;
+use yii\platform\geo\models\Locations;
 use yii\base\Component;
 use yii\base\Exception;
 
@@ -49,11 +49,6 @@ class Locator extends Component
         $this->address = $request->getUserIP();
         $this->latitude = (float) $request->get($this->latitudeParamName);
         $this->longitude = (float) $request->get($this->longitudeParamName);
-        
-        // hack for localhost
-        if($this->address === '127.0.0.1') {
-            $this->address = '217.146.245.0'; // id = 220
-        }
     }
     
     /**
@@ -69,9 +64,21 @@ class Locator extends Component
             throw new Exception('Latitude or longitude is not valid.');
         }
         
-        return GeoLocations::find()
+        return Locations::find()
                 ->fromPoint($lat, $lng)
                 ->one();
+    }
+    
+    /**
+     * Find location by default coords
+     * @return type
+     */
+    protected function resolveByDefaultCoords()
+    {
+        $latitude = (float) ini_get('date.default_latitude');
+        $longitude = (float) ini_get('date.default_longitude');
+        
+        return $this->resolveByCoords($latitude, $longitude);
     }
     
     /**
@@ -81,7 +88,7 @@ class Locator extends Component
      */
     protected function resolveByAddress($addr)
     {
-        return GeoLocations::find()
+        return Locations::find()
                 ->fromBlock($addr)
                 ->one();
     }
@@ -104,7 +111,7 @@ class Locator extends Component
     
     /**
      * Get location data
-     * @return object GeoLocations
+     * @return object Locations
      */
     public function getLocation()
     {
@@ -113,6 +120,10 @@ class Locator extends Component
                 $this->_location = $this->resolveByCoords($this->latitude, $this->longitude);
             } else {
                 $this->_location = $this->resolveByAddress($this->address);
+            }
+            
+            if($this->_location === null) {
+                $this->_location = $this->resolveByDefaultCoords();
             }
         }
         
@@ -189,5 +200,10 @@ class Locator extends Component
         }
         
         return (float) $longitude;
+    }
+    
+    public function getTimeZone()
+    {
+        var_dump($this->getLocation());
     }
 }

@@ -7,6 +7,9 @@ class Application extends \yii\web\Application
     public function behaviors()
     {
         return [
+            'application' => [
+                'class' => 'yii\platform\base\Application'
+            ],
             'registerCoreEvents' => [
                 'class' => 'yii\platform\base\CoreEvents',
                 'events' => [

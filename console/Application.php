@@ -4,6 +4,15 @@ namespace yii\platform\console;
 
 class Application extends \yii\console\Application
 {
+    public function behaviors()
+    {
+        return [
+            'application' => [
+                'class' => 'yii\platform\base\Application'
+            ]
+        ];
+    }
+    
     /**
      * Registers the core application components.
      * @see setComponents
@@ -35,7 +44,9 @@ class Application extends \yii\console\Application
     public function coreUpdaters()
     {
         return [
-            'maxmind' => 'yii\platform\updaters\MaxmindUpdater',
+            'locations' => 'yii\platform\updaters\LocationsUpdater',
+            'regions' => 'yii\platform\updaters\RegionsUpdater',
+            'timezones' => 'yii\platform\updaters\TimezonesUpdater',
         ];
     }
 }

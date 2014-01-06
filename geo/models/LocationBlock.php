@@ -3,22 +3,22 @@
 namespace yii\platform\geo\models;
 
 /**
- * This is the model class for table "geo_location_block".
+ * This is the model class for table "location_block".
  *
  * @property integer $id
  * @property integer $start
  * @property integer $end
  *
- * @property GeoLocations $id0
+ * @property Locations $id0
  */
-class GeoLocationBlock extends \yii\db\ActiveRecord
+class LocationBlock extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'geo_location_block';
+        return 'location_block';
     }
 
     /**
@@ -49,6 +49,6 @@ class GeoLocationBlock extends \yii\db\ActiveRecord
      */
     public function getLocation()
     {
-        return $this->hasOne(GeoLocations::className(), ['id' => 'id']);
+        return $this->hasOne(Locations::className(), ['id' => 'id']);
     }
 }

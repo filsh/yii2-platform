@@ -3,18 +3,18 @@
 namespace yii\platform\updaters;
 
 use yii\platform\helpers\FileHelper;
-use yii\platform\geo\models\GeoLocations;
-use yii\platform\geo\models\GeoLocationBlock;
-use yii\platform\geo\models\GeoLocationPoint;
+use yii\platform\geo\models\Locations;
+use yii\platform\geo\models\LocationBlock;
+use yii\platform\geo\models\LocationPoint;
 use yii\db\Expression;
 use yii\base\Exception;
 
-class MaxmindUpdater extends BaseUpdater
+class LocationsUpdater extends BaseUpdater
 {
     const CSV_FILE_LOCATION = 'GeoLiteCity-Location.csv';
     const CSV_FILE_BLOCKS = 'GeoLiteCity-Blocks.csv';
     
-    public $tmpPath = '@runtime/updater/maxmind';
+    public $tmpPath = '@runtime/updater/locations';
     
     public $sourceUrl;
     
@@ -22,15 +22,15 @@ class MaxmindUpdater extends BaseUpdater
     {
         FileHelper::loadFile($this->sourceUrl, [
             'destDir' => $this->tmpPath,
-            'onLoad' => [$this, 'resolveZip']
+            'onLoad' => [$this, 'resolveFile']
         ]);
         
         FileHelper::removeDirectory($this->tmpPath);
     }
     
-    public function resolveZip($zipFile)
+    public function resolveFile($file)
     {
-        if(!is_file($zipFile)) {
+        if(!is_file($file)) {
             throw new Exception('Source file not found.');
         }
         
@@ -39,7 +39,7 @@ class MaxmindUpdater extends BaseUpdater
         }
         
         $z = new \ZipArchive();
-        $z->open($zipFile);
+        $z->open($file);
         $z->extractTo($this->tmpPath);
         $z->close();
         
@@ -47,11 +47,11 @@ class MaxmindUpdater extends BaseUpdater
         $names = [self::CSV_FILE_LOCATION, self::CSV_FILE_BLOCKS];
         
         foreach($names as $name) {
-            foreach($files as $file) {
-                if(!(FileHelper::filterPath($file, ['only' => [$name]]))) {
+            foreach($files as $fileCsv) {
+                if(!(FileHelper::filterPath($fileCsv, ['only' => [$name]]))) {
                     continue;
                 }
-                $this->resolveCsv($name, $file);
+                $this->resolveCsv($name, $fileCsv);
             }
         }
     }
@@ -100,8 +100,8 @@ class MaxmindUpdater extends BaseUpdater
                 ];
                 
                 if(count($locationRows) === $this->maxExecuteRows) {
-                    $this->batchInsertDuplicate(GeoLocations::tableName(), $locationColumns, $locationRows, $licationDuplicates)->execute();
-                    $this->batchInsertDuplicate(GeoLocationPoint::tableName(), $pointColumns, $pointRows, $pointDuplicates)->execute();
+                    $this->batchInsertDuplicate(Locations::tableName(), $locationColumns, $locationRows, $licationDuplicates)->execute();
+                    $this->batchInsertDuplicate(LocationPoint::tableName(), $pointColumns, $pointRows, $pointDuplicates)->execute();
                     
                     $locationRows = [];
                     $pointRows = [];
@@ -109,8 +109,8 @@ class MaxmindUpdater extends BaseUpdater
             }
             
             if(count($locationRows) > 0) {
-                $this->batchInsertDuplicate(GeoLocations::tableName(), $locationColumns, $locationRows, $licationDuplicates)->execute();
-                $this->batchInsertDuplicate(GeoLocationPoint::tableName(), $pointColumns, $pointRows, $pointDuplicates)->execute();
+                $this->batchInsertDuplicate(Locations::tableName(), $locationColumns, $locationRows, $licationDuplicates)->execute();
+                $this->batchInsertDuplicate(LocationPoint::tableName(), $pointColumns, $pointRows, $pointDuplicates)->execute();
             }
             
             fclose($handle);
@@ -136,13 +136,13 @@ class MaxmindUpdater extends BaseUpdater
                 ];
                 
                 if(count($rows) === $this->maxExecuteRows) {
-                    $this->batchInsertDuplicate(GeoLocationBlock::tableName(), $columns, $rows, $update)->execute();
+                    $this->batchInsertDuplicate(LocationBlock::tableName(), $columns, $rows, $update)->execute();
                     $rows = [];
                 }
             }
             
             if(count($rows) > 0) {
-                $this->batchInsertDuplicate(GeoLocationBlock::tableName(), $columns, $rows, $update)->execute();
+                $this->batchInsertDuplicate(LocationBlock::tableName(), $columns, $rows, $update)->execute();
             }
             
             fclose($handle);

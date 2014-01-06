@@ -2,7 +2,7 @@
 
 use yii\db\Schema;
 
-class m130524_200441_geo_locations extends \yii\db\Migration
+class m130524_200441_locations extends \yii\db\Migration
 {
     public function up()
     {
@@ -11,7 +11,7 @@ class m130524_200441_geo_locations extends \yii\db\Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('geo_locations', [
+        $this->createTable('locations', [
             'id' => Schema::TYPE_INTEGER . '(10) unsigned NOT NULL PRIMARY KEY',
             'country' => Schema::TYPE_STRING . '(2) NOT NULL',
             'region' => Schema::TYPE_STRING . '(2) NOT NULL DEFAULT ""',
@@ -26,6 +26,6 @@ class m130524_200441_geo_locations extends \yii\db\Migration
 
     public function down()
     {
-        $this->dropTable('geo_locations');
+        $this->dropTable('locations');
     }
 }

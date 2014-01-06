@@ -50,6 +50,10 @@ class Updater extends Component
         }
         else
         {
+            if(!isset($this->updaters[$name])) {
+                throw new InvalidConfigException('Object updater not found.');
+            }
+            
             if(is_string($this->updaters[$name])) {
                 $config['class'] = $this->updaters[$name];
             } else if(is_array($this->updaters[$name])) {

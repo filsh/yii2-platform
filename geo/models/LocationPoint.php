@@ -3,18 +3,18 @@
 namespace yii\platform\geo\models;
 
 /**
- * This is the model class for table "geo_location_point".
+ * This is the model class for table "location_point".
  *
  * @property integer $id
  * @property string $point
  */
-class GeoLocationPoint extends \yii\db\ActiveRecord
+class LocationPoint extends \yii\db\ActiveRecord
 {
     public function behaviors()
     {
         return [
             'geoLocation' => [
-                'class' => 'yii\platform\geo\behaviors\GeoLocation',
+                'class' => 'yii\platform\geo\behaviors\Location',
             ],
         ];
     }
@@ -24,7 +24,7 @@ class GeoLocationPoint extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'geo_location_point';
+        return 'location_point';
     }
 
     /**
@@ -54,6 +54,6 @@ class GeoLocationPoint extends \yii\db\ActiveRecord
      */
     public function getLocation()
     {
-        return $this->hasOne(GeoLocations::className(), ['id' => 'id']);
+        return $this->hasOne(Locations::className(), ['id' => 'id']);
     }
 }
