@@ -117,6 +117,11 @@ class Locale extends \yii\base\Component
      */
     public function formatTimezone($timezone, $default = 'UTC')
     {
-        return new DateTimeZone(empty($timezone) ? $default : $timezone);
+        if(!in_array($timezone, DateTimeZone::listIdentifiers())) {
+            P::warning(sprintf('Formatted timezone \'%s\' is not supported, reset to default \'%s\'', $timezone, $default), __CLASS__);
+            $timezone = $default;
+        }
+        
+        return new DateTimeZone($timezone);
     }
 }
