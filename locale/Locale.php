@@ -2,8 +2,9 @@
 
 namespace yii\platform\locale;
 
-use yii\base\InvalidConfigException;
+use DateTimeZone;
 use yii\platform\P;
+use yii\base\InvalidConfigException;
 
 class Locale extends \yii\base\Component
 {
@@ -18,16 +19,16 @@ class Locale extends \yii\base\Component
     
     /**
      * Returns the detector for the given configure.
-     * @param LocaleDetector|array $detector
-     * @return string
+     * @param Detector|array $detector
+     * @return Detector
      * @throws InvalidConfigException
      */
-    public function getLocaleDetector($detector)
+    public function getDetector($detector)
     {
-        if(isset($detector['class'])) {
-            $class = $detector['class'];
-        } else if($detector instanceof LocaleDetector) {
+        if($detector instanceof Detector) {
             $class = get_class($detector);
+        } else if(isset($detector['class'])) {
+            $class = $detector['class'];
         } else {
             throw new InvalidConfigException("Unable to create locale detector '$detector'.");
         }
@@ -42,15 +43,15 @@ class Locale extends \yii\base\Component
     /**
      * Run detecting location
      * @param type $default
-     * @return type
+     * @return string
      */
     public function detectLanguage($default = 'en-US')
     {
         $language = null;
         foreach($this->detectors as $detector) {
             if($language === null) {
-                $detector = $this->getLocaleDetector($detector);
-                $language = $detector->detect(array_keys(self::$languageMap));
+                $detector = $this->getDetector($detector);
+                $language = $detector->detectLanguage ? $detector->detectLanguage(array_keys(self::$languageMap)) : null;
             }
         }
         
@@ -58,16 +59,34 @@ class Locale extends \yii\base\Component
             return $default;
         }
         
-        return $this->format($language, $default);
+        return $this->formatLanguage($language, $default);
+    }
+    
+    /**
+     * Run detecting timezone
+     * @param type $default
+     * @return \DateTimeZone
+     */
+    public function detectTimezone($default = 'UTC')
+    {
+        $timezone = null;
+        foreach($this->detectors as $detector) {
+            if($timezone === null) {
+                $detector = $this->getDetector($detector);
+                $timezone = $detector->detectTimezone ? $detector->detectTimezone() : null;
+            }
+        }
+        
+        return $this->formatTimezone($timezone, $default);
     }
     
     /**
      * Format language
      * @param type $language
      * @param type $default
-     * @return type
+     * @return string
      */
-    public function format($language, $default = 'en-US')
+    public function formatLanguage($language, $default = 'en-US')
     {
         $parts = explode('-', str_replace('_', '-', mb_strtolower($language)));
         
@@ -88,5 +107,16 @@ class Locale extends \yii\base\Component
         }
         
         return $language;
+    }
+    
+    /**
+     * Format timezone
+     * @param type $timezone
+     * @param type $default
+     * @return \DateTimeZone
+     */
+    public function formatTimezone($timezone, $default = 'UTC')
+    {
+        return new DateTimeZone(empty($timezone) ? $default : $timezone);
     }
 }
