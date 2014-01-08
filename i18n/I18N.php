@@ -9,7 +9,7 @@ class I18N extends \yii\i18n\I18N
         parent::init();
         if (!isset($this->translations['platform'])) {
             $this->translations['platform'] = [
-                'class' => 'yii\platform\i18n\GettextMessageSource',
+                'class' => 'yii\i18n\GettextMessageSource',
                 'sourceLanguage' => 'en-US',
                 'basePath' => '@platform/messages',
             ];

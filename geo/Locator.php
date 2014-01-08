@@ -66,6 +66,7 @@ class Locator extends Component
         
         return Locations::find()
                 ->fromPoint($lat, $lng)
+                ->limit(1)
                 ->one();
     }
     
@@ -90,6 +91,7 @@ class Locator extends Component
     {
         return Locations::find()
                 ->fromBlock($addr)
+                ->limit(1)
                 ->one();
     }
     

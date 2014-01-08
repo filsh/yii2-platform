@@ -8,7 +8,7 @@ class Application extends \yii\console\Application
     {
         return [
             'application' => [
-                'class' => 'yii\platform\base\Application'
+                'class' => 'yii\platform\behaviors\Application'
             ]
         ];
     }

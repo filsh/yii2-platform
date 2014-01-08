@@ -8,13 +8,7 @@ class Application extends \yii\web\Application
     {
         return [
             'application' => [
-                'class' => 'yii\platform\base\Application'
-            ],
-            'registerCoreEvents' => [
-                'class' => 'yii\platform\base\CoreEvents',
-                'events' => [
-                    self::EVENT_BEFORE_REQUEST => 'beforeRequest'
-                ]
+                'class' => 'yii\platform\behaviors\Application'
             ]
         ];
     }

@@ -65,7 +65,7 @@ class Locale extends \yii\base\Component
     /**
      * Run detecting timezone
      * @param type $default
-     * @return \DateTimeZone
+     * @return string
      */
     public function detectTimezone($default = 'UTC')
     {
@@ -113,15 +113,16 @@ class Locale extends \yii\base\Component
      * Format timezone
      * @param type $timezone
      * @param type $default
-     * @return \DateTimeZone
+     * @return string
      */
     public function formatTimezone($timezone, $default = 'UTC')
     {
         if(!in_array($timezone, DateTimeZone::listIdentifiers())) {
-            P::warning(sprintf('Formatted timezone \'%s\' is not supported, reset to default \'%s\'', $timezone, $default), __CLASS__);
+            P::warning(sprintf(
+                    'Formatted timezone \'%s\' is not supported, reset to default \'%s\'', $timezone, $default), __CLASS__);
             $timezone = $default;
         }
         
-        return new DateTimeZone($timezone);
+        return $timezone;
     }
 }
