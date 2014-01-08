@@ -15,7 +15,7 @@ class HttpParamDetector extends Detector
             return $language;
         }
         
-        return null;
+        return empty($languages) ? $language : null;
     }
     
     public function detectTimezone($timezones = [])

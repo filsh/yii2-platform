@@ -14,7 +14,9 @@ class Locale extends \yii\base\Component
         'en'    => 'en-US',
         'en-US' => 'en-US',
         'ru'    => 'ru-RU',
-        'ru-RU' => 'ru-RU'
+        'ru-RU' => 'ru-RU',
+        'ua'    => 'ua-UA',
+        'ua-UA' => 'ua-UA'
     ];
     
     /**
@@ -51,7 +53,7 @@ class Locale extends \yii\base\Component
         foreach($this->detectors as $detector) {
             if($language === null) {
                 $detector = $this->getDetector($detector);
-                $language = $detector->detectLanguage ? $detector->detectLanguage(array_keys(self::$languageMap)) : null;
+                $language = $detector->detectLanguage ? $detector->detectLanguage() : null;
             }
         }
         
