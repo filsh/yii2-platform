@@ -34,6 +34,7 @@ class Application extends \yii\console\Application
         return array_merge(parent::coreCommands(), [
             'migrate' => 'yii\platform\console\controllers\MigrateController',
             'updater' => 'yii\platform\console\controllers\UpdaterController',
+            'platform' => 'yii\platform\console\controllers\PlatformController',
         ]);
     }
     
