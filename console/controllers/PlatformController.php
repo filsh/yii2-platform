@@ -11,29 +11,38 @@ use yii\console\Controller;
 class PlatformController extends Controller
 {
     /**
-     * Update platform
+     * @var boolean whether to update all without confirmation dialog
      */
-    public function actionUpdate()
+    public $all = false;
+    
+    /**
+     * Initialize or update platform data
+     */
+    public function actionIndex()
     {
-        $migrate = P::$app->createController('migrate');
-        if(!empty($migrate) && is_array($migrate)) {
-            $migrate = $migrate[0];
-            $migrate->interactive = false;
-        }
-        if($this->confirm('Do you want to apply migrations?')) {
-            $migrate->runAction('up');
-        }
-        
         $updater = P::$app->createController('updater');
         if(!empty($updater) && is_array($updater)) {
             $updater = $updater[0];
         }
-        foreach(['locations', 'regions', 'timezones'] as $action) {
-            if($this->confirm('Do you want to update "' . $action . '"?')) {
+        
+        $actions = ['locations', 'regions', 'timezones'];
+        foreach($actions as $action) {
+            if($this->all || $this->confirm('Do you want to update "' . $action . '"?')) {
                 $updater->runAction($action);
             }
         }
         
         echo "\nPlatform updated successfully.\n";
+    }
+    
+    /**
+     * Returns the names of the global options for this command.
+     * @return array the names of the global options for this command.
+     */
+    public function globalOptions()
+    {
+        return array_merge(parent::globalOptions(), [
+            'all'
+        ]);
     }
 }
