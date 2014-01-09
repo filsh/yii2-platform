@@ -6,10 +6,10 @@ use yii\platform\P;
 
 class BrowserDetector extends Detector
 {
-    public function detectLanguage($languages = [])
+    public function detectLocale($locales = [])
     {
         $request = P::$app->getRequest();
-        return strtolower($request->getPreferredLanguage($languages));
+        return strtolower($request->getPreferredLanguage($locales));
     }
 
     public function detectTimezone($timezones = [])

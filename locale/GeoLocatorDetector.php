@@ -7,7 +7,7 @@ use yii\platform\geo\models\Timezones;
 
 class GeoLocatorDetector extends Detector
 {
-    public function detectLanguage($languages = [])
+    public function detectLocale($locales = [])
     {
         // TODO: логика по определению языка с GeoLocator
         return null;

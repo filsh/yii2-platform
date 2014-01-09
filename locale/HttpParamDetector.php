@@ -8,14 +8,14 @@ class HttpParamDetector extends Detector
 {
     public $paramLang = 'lang';
     
-    public function detectLanguage($languages = [])
+    public function detectLocale($locales = [])
     {
         $language = P::$app->getRequest()->get($this->paramLang);
-        if(in_array($language, $languages)) {
+        if(in_array($language, $locales)) {
             return $language;
         }
         
-        return empty($languages) ? $language : null;
+        return empty($locales) ? $language : null;
     }
     
     public function detectTimezone($timezones = [])

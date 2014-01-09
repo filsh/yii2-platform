@@ -10,7 +10,7 @@ class Locale extends \yii\base\Component
 {
     public $detectors = [];
     
-    public static $languageMap = [
+    public static $localeMap = [
         'en'    => 'en-US',
         'en-US' => 'en-US',
         'ru'    => 'ru-RU',
@@ -43,25 +43,25 @@ class Locale extends \yii\base\Component
     }
     
     /**
-     * Run detecting location
+     * Run detecting locale
      * @param type $default
      * @return string
      */
-    public function detectLanguage($default = 'en-US')
+    public function detectLocale($default = 'en-US')
     {
-        $language = null;
+        $locale = null;
         foreach($this->detectors as $detector) {
-            if($language === null) {
+            if($locale === null) {
                 $detector = $this->getDetector($detector);
-                $language = $detector->detectLanguage ? $detector->detectLanguage() : null;
+                $locale = $detector->detectLocale ? $detector->detectLocale() : null;
             }
         }
         
-        if($language === null) {
+        if($locale === null) {
             return $default;
         }
         
-        return $this->formatLanguage($language, $default);
+        return $this->formatLocale($locale, $default);
     }
     
     /**
@@ -84,31 +84,31 @@ class Locale extends \yii\base\Component
     
     /**
      * Format language
-     * @param type $language
+     * @param type $locale
      * @param type $default
      * @return string
      */
-    public function formatLanguage($language, $default = 'en-US')
+    public function formatLocale($locale, $default = 'en-US')
     {
-        $parts = explode('-', str_replace('_', '-', mb_strtolower($language)));
+        $parts = explode('-', str_replace('_', '-', mb_strtolower($locale)));
         
         switch(count($parts)) {
             case 1:
-                $language = $parts[0];
+                $locale = $parts[0];
                 break;
             case 2:
-                $language = $parts[0] . '-' . mb_strtoupper($parts[1]);
+                $locale = $parts[0] . '-' . mb_strtoupper($parts[1]);
                 break;
         }
         
-        if(isset(self::$languageMap[$language])) {
-            $language = self::$languageMap[$language];
+        if(isset(self::$localeMap[$locale])) {
+            $locale = self::$localeMap[$locale];
         } else {
-            P::warning(sprintf('Formatted language \'%s\' is not supported, reset to default \'%s\'', $language, $default), __CLASS__);
-            $language = $default;
+            P::warning(sprintf('Formatted language \'%s\' is not supported, reset to default \'%s\'', $locale, $default), __CLASS__);
+            $locale = $default;
         }
         
-        return $language;
+        return $locale;
     }
     
     /**
@@ -126,5 +126,27 @@ class Locale extends \yii\base\Component
         }
         
         return $timezone;
+    }
+    
+    /**
+     * Converts a locale Id to a language Id.
+     * A language ID consists of only the first group of letters before an underscore or dash.
+     * @param string $id the locale ID to be converted
+     * @return string the language ID
+     */
+    public function getLanguage($locale)
+    {
+        return locale_get_primary_language($locale);
+    }
+    
+    /**
+     * Check of similars two locales
+     * @param type $first
+     * @param type $second
+     * @return bool
+     */
+    public function getIsSimilarLocales($first, $second)
+    {
+        return locale_get_primary_language($first) === locale_get_primary_language($second);
     }
 }

@@ -12,14 +12,8 @@ class LangSwitcher extends Menu
     
     public $paramLang = 'lang';
     
-    public $lang;
-    
     public function run()
     {
-        if($this->lang === null) {
-            $this->lang = strtolower(locale_get_primary_language(P::$app->getLocale()->detectLanguage()));
-        }
-        
         $view = $this->getView();
         LangSwitcherAsset::register($view);
         parent::run();
@@ -33,11 +27,13 @@ class LangSwitcher extends Menu
             }
             
             $lang = strtolower(locale_get_primary_language(P::$app->language));
+            var_dump($lang);
             if($item[$this->paramLang] !== $lang) {
                 $this->params[$this->paramLang] = $item[$this->paramLang];
             } else {
                 unset($this->params[$this->paramLang]);
             }
+            
             $items[$i]['url'] = $this->params;
             array_unshift($items[$i]['url'], $this->route);
         }
@@ -51,7 +47,10 @@ class LangSwitcher extends Menu
             if (count($item['url']) > 1) {
                 $lang = strtolower(locale_get_primary_language(P::$app->language));
                 $params = array_splice($item['url'], 1);
-                if(isset($params[$this->paramLang]) && $params[$this->paramLang] === $lang) {
+                
+                if(!isset($params[$this->paramLang])) {
+                    return parent::isItemActive($item);
+                } else if($params[$this->paramLang] === $lang) {
                     return true;
                 }
             }

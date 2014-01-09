@@ -5,10 +5,10 @@ namespace yii\platform\locale;
 abstract class Detector
 {
     /**
-     * Enable to detect language
+     * Enable to detect locale
      * @var type 
      */
-    public $detectLanguage = true;
+    public $detectLocale = true;
     
     /**
      * Enable to detect timezone
@@ -17,10 +17,10 @@ abstract class Detector
     public $detectTimezone = true;
     
     /**
-     * Detect language
+     * Detect locale
      * @return string
      */
-    abstract public function detectLanguage($languages = []);
+    abstract public function detectLocale($locales = []);
     
     /**
      * Detect timezone
