@@ -8,8 +8,7 @@ class BrowserDetector extends Detector
 {
     public function detectLocale($locales = [])
     {
-        $request = P::$app->getRequest();
-        return strtolower($request->getPreferredLanguage($locales));
+        return P::$app->getRequest()->getPreferredLanguage($locales);
     }
 
     public function detectTimezone($timezones = [])

@@ -6,13 +6,13 @@ abstract class Detector
 {
     /**
      * Enable to detect locale
-     * @var type 
+     * @var bool 
      */
     public $detectLocale = true;
     
     /**
      * Enable to detect timezone
-     * @var type 
+     * @var bool 
      */
     public $detectTimezone = true;
     

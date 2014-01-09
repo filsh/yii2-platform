@@ -26,14 +26,7 @@ class LangSwitcher extends Menu
                 throw new InvalidConfigException('The "' . $this->paramLang . '" element is required for each item.');
             }
             
-            $lang = strtolower(locale_get_primary_language(P::$app->language));
-            var_dump($lang);
-            if($item[$this->paramLang] !== $lang) {
-                $this->params[$this->paramLang] = $item[$this->paramLang];
-            } else {
-                unset($this->params[$this->paramLang]);
-            }
-            
+            $this->params[$this->paramLang] = $item[$this->paramLang];
             $items[$i]['url'] = $this->params;
             array_unshift($items[$i]['url'], $this->route);
         }
@@ -45,7 +38,7 @@ class LangSwitcher extends Menu
     {
         if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
             if (count($item['url']) > 1) {
-                $lang = strtolower(locale_get_primary_language(P::$app->language));
+                $lang = P::$app->locale->getLanguage(P::$app->language);
                 $params = array_splice($item['url'], 1);
                 
                 if(!isset($params[$this->paramLang])) {

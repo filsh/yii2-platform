@@ -11,7 +11,7 @@ class UrlManager extends \yii\web\UrlManager
         return parent::createUrl($route, array_merge($this->params, $params));
     }
     
-    public function setDefaultParam($key, $value)
+    public function setParam($key, $value)
     {
         $this->params[$key] = $value;
     }
