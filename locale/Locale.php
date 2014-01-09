@@ -40,15 +40,16 @@ class Locale extends \yii\base\Component
     
     public $acceptors = [];
     
-    public static $localeMap = [
-        'en'    => 'en-US',
-        'en-US' => 'en-US',
-        'ru'    => 'ru-RU',
-        'ru-RU' => 'ru-RU',
-        'ua'    => 'ua-UA',
-        'ua-UA' => 'ua-UA',
-        'ua-RU' => 'ua-RU'
-    ];
+    public $locales = [];
+    
+    public function init()
+    {
+        parent::init();
+        
+        if(!in_array('en-US', $this->locales)) {
+            array_push($this->locales, 'en-US');
+        }
+    }
     
     /**
      * Returns the detector for the given configure.
@@ -177,9 +178,7 @@ class Locale extends \yii\base\Component
         }
         
         $locale = implode('-', [$lang, $region]);
-        if(isset(self::$localeMap[$locale])) {
-            $locale = self::$localeMap[$locale];
-        } else {
+        if(!in_array($locale, $this->locales)) {
             P::warning(sprintf('Formatted language \'%s\' is not supported, reset to default \'%s\'', $locale, $default), __CLASS__);
             $locale = $default;
         }
