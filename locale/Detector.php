@@ -2,7 +2,9 @@
 
 namespace yii\platform\locale;
 
-abstract class Detector
+use yii\base\Object;
+
+abstract class Detector extends Object
 {
     /**
      * Enable to detect locale

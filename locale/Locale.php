@@ -38,7 +38,11 @@ class Locale extends \yii\base\Component
 {
     public $detectors = [];
     
-    public $acceptors = [];
+    public $acceptors = [
+        [
+            'class' => 'yii\platform\locale\DefaultAcceptor'
+        ]
+    ];
     
     public $locales = [];
     
@@ -46,9 +50,7 @@ class Locale extends \yii\base\Component
     {
         parent::init();
         
-        if(!in_array('en-US', $this->locales)) {
-            array_push($this->locales, 'en-US');
-        }
+        $this->locales = array_merge($this->locales, ['en', 'en-US']);
     }
     
     /**
@@ -142,8 +144,11 @@ class Locale extends \yii\base\Component
     {
         foreach($this->acceptors as $acceptor) {
             $acceptor = $this->getAcceptor($acceptor);
-            return $acceptor->acceptLocale ? $acceptor->acceptLocale($locale) : null;
+            if($acceptor->acceptLocale && $acceptor->acceptLocale($locale) === true) {
+                break;
+            }
         }
+        return $locale;
     }
     
     /**
@@ -155,8 +160,11 @@ class Locale extends \yii\base\Component
     {
         foreach($this->acceptors as $acceptor) {
             $acceptor = $this->getAcceptor($acceptor);
-            return $acceptor->acceptTimezone ? $acceptor->acceptTimezone($timezone) : null;
+            if($acceptor->acceptTimezone && $acceptor->acceptTimezone($timezone) === true) {
+                break;
+            }
         }
+        return $timezone;
     }
     
     /**
@@ -176,9 +184,16 @@ class Locale extends \yii\base\Component
         if(empty($region)) {
             $region = $this->getRegion(P::$app->language);
         }
-        
-        $locale = implode('-', [$lang, $region]);
-        if(!in_array($locale, $this->locales)) {
+        if(empty($region)) {
+            $region = P::$app->geoLocator->getCountry();
+        }
+
+        $formated = implode('-', [$lang, $region]);
+        if(in_array($formated, $this->locales)) {
+            $locale = $formated;
+        } else if(in_array($lang, $this->locales)) {
+            $locale = $lang === 'en' ? 'en-US' : $lang;
+        } else {
             P::warning(sprintf('Formatted language \'%s\' is not supported, reset to default \'%s\'', $locale, $default), __CLASS__);
             $locale = $default;
         }

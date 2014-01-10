@@ -2,7 +2,9 @@
 
 namespace yii\platform\locale;
 
-abstract class Acceptor
+use yii\base\Object;
+
+abstract class Acceptor extends Object
 {
     /**
      * Enable to accept locale
@@ -18,13 +20,13 @@ abstract class Acceptor
     
     /**
      * Accept locale
-     * @return string return accepted locale
+     * @return bool return true is locale accepted
      */
     abstract public function acceptLocale($locale);
     
     /**
      * Accept timezone
-     * @return string return accepted timezone
+     * @return bool return true is timezone accepted
      */
     abstract public function acceptTimezone($timezone);
 }

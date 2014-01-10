@@ -10,40 +10,37 @@ class HttpParamAcceptor extends Acceptor
     
     public function acceptLocale($locale)
     {
-        $lang = P::$app->getRequest()->get($this->paramLang);
-        if($lang === null) {
+        $route = $this->getRoute();
+        if(!isset($_GET[$this->paramLang])) {
             return;
         }
         
-        if($this->checkSimilarLocale($locale, P::$app->language)) {
-            $resolved = P::$app->getRequest()->resolve();
-            if(isset($resolved[1][$this->paramLang])) {
-                unset($resolved[1][$this->paramLang]);
-            }
-            
-            $url = P::$app->getUrlManager()->createUrl($resolved[0], $resolved[1]);
+        $lang = P::$app->locale->getLanguage($locale);
+        $appLang = P::$app->locale->getLanguage(P::$app->language);
+        if($lang === $appLang)
+        {
+            unset($_GET[$this->paramLang]);
+            $url = P::$app->getUrlManager()->createUrl($route, $_GET);
             P::$app->getResponse()->redirect($url);
         }
         
         P::$app->setLanguage($locale);
-        P::$app->getUrlManager()->setParam($this->paramLang, P::$app->locale->getLanguage($locale));
-        return $locale;
+        P::$app->getUrlManager()->setParam($this->paramLang, $lang);
+        return true;
     }
 
     public function acceptTimezone($timezone)
     {
-        P::$app->setTimeZone($timezone);
-        return $timezone;
+        return false;
     }
     
-    /**
-     * Check of similars two locales
-     * @param type $first
-     * @param type $second
-     * @return bool
-     */
-    protected function checkSimilarLocale($first, $second)
+    protected function getRoute()
     {
-        return P::$app->locale->getLanguage($first) === P::$app->locale->getLanguage($second);
+        if(empty(P::$app->controller)) {
+            $route = P::$app->getRequest()->resolve()[0];
+        } else {
+            $route = P::$app->controller->getRoute();
+        }
+        return $route;
     }
 }
