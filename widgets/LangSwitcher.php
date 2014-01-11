@@ -12,6 +12,14 @@ class LangSwitcher extends Menu
     
     public $paramLang = 'lang';
     
+    public function init()
+    {
+        parent::init();
+        if (!isset($this->options['id'])) {
+            $this->options['id'] = $this->getId();
+        }
+    }
+    
     public function run()
     {
         $view = $this->getView();
