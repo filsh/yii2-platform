@@ -12,7 +12,7 @@ class HttpParamAcceptor extends Acceptor
     {
         $route = $this->getRoute();
         if(!isset($_GET[$this->paramLang])) {
-            return;
+            return false;
         }
         
         $lang = P::$app->locale->getLanguage($locale);

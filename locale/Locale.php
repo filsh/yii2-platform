@@ -145,9 +145,10 @@ class Locale extends \yii\base\Component
         foreach($this->acceptors as $acceptor) {
             $acceptor = $this->getAcceptor($acceptor);
             if($acceptor->acceptLocale && $acceptor->acceptLocale($locale) === true) {
-                break;
+                return $locale;
             }
         }
+        P::warning(sprintf('Locale \'%s\' is not accepted, still on default \'%s\'', $locale, P::$app->language), __CLASS__);
         return $locale;
     }
     
@@ -161,9 +162,10 @@ class Locale extends \yii\base\Component
         foreach($this->acceptors as $acceptor) {
             $acceptor = $this->getAcceptor($acceptor);
             if($acceptor->acceptTimezone && $acceptor->acceptTimezone($timezone) === true) {
-                break;
+                return $timezone;
             }
         }
+        P::warning(sprintf('Timezone \'%s\' is not accepted, still on default \'%s\'', $timezone, P::$app->getTimeZone()), __CLASS__);
         return $timezone;
     }
     

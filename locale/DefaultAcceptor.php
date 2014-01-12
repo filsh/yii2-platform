@@ -9,12 +9,12 @@ class DefaultAcceptor extends Acceptor
     public function acceptLocale($locale)
     {
         P::$app->setLanguage($locale);
-        return $locale;
+        return true;
     }
 
     public function acceptTimezone($timezone)
     {
         P::$app->setTimeZone($timezone);
-        return $timezone;
+        return true;
     }    
 }
