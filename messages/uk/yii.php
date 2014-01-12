@@ -51,7 +51,7 @@ return array (
   'The file "{file}" is too small. The height cannot be smaller than {limit} pixels.' => '',
   'The file "{file}" is too small. The width cannot be smaller than {limit} pixels.' => '',
   'The format of {attribute} is invalid.' => 'Невірний формат поля {attribute}.',
-  'The verification code is incorrect.' => '',
+  'The verification code is incorrect.' => 'Невірний код перевірки.',
   'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => '',
   'Unable to verify your data submission.' => '',
   'Unknown Class' => '',
