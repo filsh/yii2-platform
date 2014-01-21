@@ -148,7 +148,9 @@ class Locale extends \yii\base\Component
                 return $locale;
             }
         }
-        P::warning(sprintf('Locale \'%s\' is not accepted, still on default \'%s\'', $locale, P::$app->language), __CLASS__);
+        if($locale !== P::$app->language) {
+            P::warning(sprintf('Locale \'%s\' is not accepted, still on default \'%s\'', $locale, P::$app->language), __CLASS__);
+        }
         return $locale;
     }
     
@@ -165,7 +167,9 @@ class Locale extends \yii\base\Component
                 return $timezone;
             }
         }
-        P::warning(sprintf('Timezone \'%s\' is not accepted, still on default \'%s\'', $timezone, P::$app->getTimeZone()), __CLASS__);
+        if($timezone !== P::$app->getTimeZone()) {
+            P::warning(sprintf('Timezone \'%s\' is not accepted, still on default \'%s\'', $timezone, P::$app->getTimeZone()), __CLASS__);
+        }
         return $timezone;
     }
     
@@ -230,8 +234,11 @@ class Locale extends \yii\base\Component
      * @param string $id the locale ID to be converted
      * @return string the language ID
      */
-    public function getLanguage($locale)
+    public function getLanguage($locale = null)
     {
+        if($locale === null) {
+            $locale = P::$app->language;
+        }
         return locale_get_primary_language($locale);
     }
     
