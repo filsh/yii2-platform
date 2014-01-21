@@ -2,8 +2,8 @@
 
 namespace yii\platform\console\controllers;
 
+use yii\platform\P;
 use yii\console\Controller;
-use yii\platform\updaters\Updater;
 
 /**
  * This command manages application updaters.
@@ -27,8 +27,7 @@ class UpdaterController extends Controller
      */
     public function actionLocations($sourceUrl = self::LOCATIONS_SOURCE_URL)
     {
-        $updater = new Updater();
-        $updater->run('locations', [
+        P::$app->updater->run('locations', [
             'sourceUrl' => $sourceUrl
         ]);
     }
@@ -43,8 +42,7 @@ class UpdaterController extends Controller
      */
     public function actionRegions($sourceUrl = self::REGIONS_SOURCE_URL)
     {
-        $updater = new Updater();
-        $updater->run('regions', [
+        P::$app->updater->run('regions', [
             'sourceUrl' => $sourceUrl
         ]);
     }
@@ -59,8 +57,7 @@ class UpdaterController extends Controller
      */
     public function actionTimezones($sourceUrl = self::TIMEZONES_SOURCE_URL)
     {
-        $updater = new Updater();
-        $updater->run('timezones', [
+        P::$app->updater->run('timezones', [
             'sourceUrl' => $sourceUrl
         ]);
     }

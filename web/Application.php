@@ -43,6 +43,7 @@ class Application extends \yii\web\Application
             'i18n' => ['class' => 'yii\platform\i18n\I18N'],
             'geoLocator' => ['class' => 'yii\platform\geo\Locator'],
             'locale' => ['class' => 'yii\platform\locale\Locale'],
+            'updater' => ['class' => 'yii\platform\updaters\Updater'],
         ]);
     }
     

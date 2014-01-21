@@ -22,7 +22,8 @@ class Application extends \yii\console\Application
         parent::registerCoreComponents();
         $this->setComponents([
             'urlManager' => ['class' => 'yii\platform\web\UrlManager'],
-            'i18n' => ['class' => 'yii\platform\i18n\I18N']
+            'i18n' => ['class' => 'yii\platform\i18n\I18N'],
+            'updater' => ['class' => 'yii\platform\updaters\Updater'],
         ]);
     }
     
