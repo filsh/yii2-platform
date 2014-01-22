@@ -2,9 +2,6 @@
 
 namespace yii\platform\geo\models;
 
-use yii\platform\helpers\GeoHelper;
-use yii\base\Exception;
-
 /**
  * This is the model class for table "locations".
  *
@@ -82,54 +79,16 @@ class Locations extends \yii\db\ActiveRecord
         ];
     }
     
+    public static function createQuery()
+    {
+        return new LocationQuery(['modelClass' => get_called_class()]);
+    }
+    
     /**
      * @return \yii\db\ActiveRelation
      */
     public function getPoint()
     {
         return $this->hasOne(LocationPoint::className(), ['id' => 'id']);
-    }
-    
-    /**
-     * @param ActiveQuery $query
-     * @param type $lat
-     * @param type $lng
-     * @param type $dist
-     * @return type
-     * @throws Exception
-     */
-    public static function fromPoint($query, $lat, $lng, $dist = 30)
-    {
-        if (!is_float($lat) || !is_float($lng)) {
-            throw new Exception('Location coords is not valid.');
-        }
-        
-        $query->from(self::tableName() . ' l');
-        $query->innerJoin(LocationPoint::tableName() . ' p', 'l.id=p.id');
-        $query->select('*, ' . GeoHelper::createDistanceCondition($lat, $lng) . ' AS distance');
-        $query->andWhere(GeoHelper::createPoligonCriteria($lat, $lng, $dist));
-        $query->orderBy('distance');
-    }
-    
-    /**
-     * @param type $query
-     * @param type $addr
-     * @throws AppException
-     */
-    public static function fromBlock($query, $addr)
-    {
-        if (!is_scalar($addr)) {
-            throw new AppException('Location address is not valid.');
-        }
-        
-        $block = LocationBlock::find()
-                ->where(':addr BETWEEN start AND end', [':addr' => ip2long($addr)])
-                ->one();
-        
-        if($block !== null) {
-            $query->andWhere('id = :id', [':id' => $block->id]);
-        } else {
-            $query->andWhere(0);
-        }
     }
 }
