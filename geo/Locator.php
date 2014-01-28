@@ -47,8 +47,8 @@ class Locator extends Component
         
         $request =  P::$app->getRequest();
         $this->address = $request->getUserIP();
-        $this->latitude = (float) $request->get($this->latitudeParamName);
-        $this->longitude = (float) $request->get($this->longitudeParamName);
+        $this->latitude = (float) $request->getQueryParam($this->latitudeParamName);
+        $this->longitude = (float) $request->getQueryParam($this->longitudeParamName);
     }
     
     /**

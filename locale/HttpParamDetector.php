@@ -10,7 +10,7 @@ class HttpParamDetector extends Detector
     
     public function detectLocale($locales = [])
     {
-        $language = P::$app->getRequest()->get($this->paramLang);
+        $language = P::$app->getRequest()->getQueryParam($this->paramLang);
         if(in_array($language, $locales)) {
             return $language;
         }
