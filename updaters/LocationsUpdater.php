@@ -48,7 +48,7 @@ class LocationsUpdater extends BaseUpdater
         
         foreach($names as $name) {
             foreach($files as $fileCsv) {
-                if(!(FileHelper::filterPath($fileCsv, ['only' => [$name]]))) {
+                if(!(FileHelper::filterPath($fileCsv, ['only' => [$name], 'basePath' => realpath($fileCsv)]))) {
                     continue;
                 }
                 $this->resolveCsv($name, $fileCsv);
