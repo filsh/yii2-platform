@@ -14,8 +14,12 @@ class CompareDateValidator extends CompareValidator
     {
         $value = DateTime::createFromFormat($this->format, $value);
         $compareValue = DateTime::createFromFormat($this->format, $compareValue);
-        $diff = ((int) $value->diff($compareValue)->format('%r%a%H%I%S')) * -1;
         
+        if(!$value || !$compareValue) {
+            return false;
+        }
+        
+        $diff = ((int) $value->diff($compareValue)->format('%r%a%H%I%S')) * -1;
         switch ($operator) {
             case '==': return $diff == 0;
             case '===': return $diff === 0;
@@ -31,6 +35,6 @@ class CompareDateValidator extends CompareValidator
     
     public function clientValidateAttribute($object, $attribute, $view)
     {
-        throw new ErrorException('Disabled client validation for compareDate validator.');
+        return null;
     }
 }
