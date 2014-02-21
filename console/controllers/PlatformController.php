@@ -20,15 +20,15 @@ class PlatformController extends Controller
      */
     public function actionIndex()
     {
-        $updater = P::$app->createController('updater');
-        if(!empty($updater) && is_array($updater)) {
-            $updater = $updater[0];
+        $runner = P::$app->createController('runner');
+        if(!empty($runner) && is_array($runner)) {
+            $runner = $runner[0];
         }
         
         $actions = ['locations', 'regions', 'timezones'];
         foreach($actions as $action) {
             if($this->all || $this->confirm('Do you want to update "' . $action . '"?')) {
-                $updater->runAction($action);
+                $runner->runAction($action);
             }
         }
         

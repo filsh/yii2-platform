@@ -1,6 +1,6 @@
 <?php
 
-namespace yii\platform\updaters;
+namespace yii\platform\runners;
 
 use yii\platform\helpers\FileHelper;
 use yii\platform\geo\models\Locations;
@@ -9,12 +9,12 @@ use yii\platform\geo\models\LocationPoint;
 use yii\db\Expression;
 use yii\base\Exception;
 
-class LocationsUpdater extends BaseUpdater
+class LocationsRunner extends BaseRunner
 {
     const CSV_FILE_LOCATION = 'GeoLiteCity-Location.csv';
     const CSV_FILE_BLOCKS = 'GeoLiteCity-Blocks.csv';
     
-    public $tmpPath = '@runtime/updater/locations';
+    public $tmpPath = '@runtime/runner/locations';
     
     public $sourceUrl;
     

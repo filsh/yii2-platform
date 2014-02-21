@@ -1,14 +1,14 @@
 <?php
 
-namespace yii\platform\updaters;
+namespace yii\platform\runners;
 
 use yii\platform\P;
 use yii\platform\helpers\FileHelper;
 use yii\base\Component;
 
-abstract class BaseUpdater extends Component
+abstract class BaseRunner extends Component
 {
-    public $tmpPath = '@runtime/updater';
+    public $tmpPath = '@runtime/runner';
     
     public $tmpDirMode = 0775;
     

@@ -6,9 +6,9 @@ use yii\platform\P;
 use yii\console\Controller;
 
 /**
- * This command manages application updaters.
+ * This command manages application runners.
  */
-class UpdaterController extends Controller
+class RunnerController extends Controller
 {
     const LOCATIONS_SOURCE_URL = 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity_CSV/GeoLiteCity-latest.zip';
     
@@ -17,7 +17,7 @@ class UpdaterController extends Controller
     const TIMEZONES_SOURCE_URL = 'http://dev.maxmind.com/static/csv/codes/time_zone.csv';
     
     /**
-     * Run locations updater.
+     * Run locations runner.
      *
      * This command load and parse Maxmind csv data file.
      *
@@ -27,13 +27,13 @@ class UpdaterController extends Controller
      */
     public function actionLocations($sourceUrl = self::LOCATIONS_SOURCE_URL)
     {
-        P::$app->updater->run('locations', [
+        P::$app->runner->run('locations', [
             'sourceUrl' => $sourceUrl
         ]);
     }
     
     /**
-     * Run regions updater.
+     * Run regions runner.
      *
      * This command load and parse Maxmind regions csv data file.
      *
@@ -42,13 +42,13 @@ class UpdaterController extends Controller
      */
     public function actionRegions($sourceUrl = self::REGIONS_SOURCE_URL)
     {
-        P::$app->updater->run('regions', [
+        P::$app->runner->run('regions', [
             'sourceUrl' => $sourceUrl
         ]);
     }
     
     /**
-     * Run timezones updater.
+     * Run timezones runner.
      *
      * This command load and parse Maxmind timezones csv data file.
      *
@@ -57,7 +57,7 @@ class UpdaterController extends Controller
      */
     public function actionTimezones($sourceUrl = self::TIMEZONES_SOURCE_URL)
     {
-        P::$app->updater->run('timezones', [
+        P::$app->runner->run('timezones', [
             'sourceUrl' => $sourceUrl
         ]);
     }

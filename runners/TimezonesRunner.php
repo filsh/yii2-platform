@@ -1,13 +1,13 @@
 <?php
 
-namespace yii\platform\updaters;
+namespace yii\platform\runners;
 
 use yii\platform\helpers\FileHelper;
 use yii\platform\geo\models\Timezones;
 
-class TimezonesUpdater extends BaseUpdater
+class TimezonesRunner extends BaseRunner
 {
-    public $tmpPath = '@runtime/updater/timezones';
+    public $tmpPath = '@runtime/runner/timezones';
     
     public $sourceUrl;
     

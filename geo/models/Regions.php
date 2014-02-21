@@ -17,7 +17,7 @@ class Regions extends \yii\db\ActiveRecord
     {
         return [
             'timestamp' => [
-                'class' => 'yii\behaviors\AutoTimestamp',
+                'class' => 'yii\behaviors\TimestampBehavior',
                 'attributes' => [
                     self::EVENT_BEFORE_INSERT => ['create_time', 'update_time'],
                     self::EVENT_BEFORE_UPDATE => 'update_time',

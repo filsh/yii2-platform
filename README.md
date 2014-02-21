@@ -1,4 +1,4 @@
 yii2-platform
 ============
 
-yii updater/maxmind
+yii runner/maxmind

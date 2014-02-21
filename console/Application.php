@@ -23,7 +23,7 @@ class Application extends \yii\console\Application
         $this->setComponents([
             'urlManager' => ['class' => 'yii\platform\web\UrlManager'],
             'i18n' => ['class' => 'yii\platform\i18n\I18N'],
-            'updater' => ['class' => 'yii\platform\updaters\Updater'],
+            'runner' => ['class' => 'yii\platform\runners\Runner'],
         ]);
     }
     
@@ -35,21 +35,21 @@ class Application extends \yii\console\Application
     {
         return array_merge(parent::coreCommands(), [
             'migrate' => 'yii\platform\console\controllers\MigrateController',
-            'updater' => 'yii\platform\console\controllers\UpdaterController',
+            'runner' => 'yii\platform\console\controllers\RunnerController',
             'platform' => 'yii\platform\console\controllers\PlatformController',
         ]);
     }
     
     /**
-     * Returns the configuration of the built-in updaters.
-     * @return array the configuration of the built-in updaters.
+     * Returns the configuration of the built-in runners.
+     * @return array the configuration of the built-in runners.
      */
-    public function coreUpdaters()
+    public function coreRunners()
     {
         return [
-            'locations' => 'yii\platform\updaters\LocationsUpdater',
-            'regions' => 'yii\platform\updaters\RegionsUpdater',
-            'timezones' => 'yii\platform\updaters\TimezonesUpdater',
+            'locations' => 'yii\platform\runners\LocationsRunner',
+            'regions' => 'yii\platform\runners\RegionsRunner',
+            'timezones' => 'yii\platform\runners\TimezonesRunner',
         ];
     }
 }

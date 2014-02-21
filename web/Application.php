@@ -43,15 +43,15 @@ class Application extends \yii\web\Application
             'i18n' => ['class' => 'yii\platform\i18n\I18N'],
             'geoLocator' => ['class' => 'yii\platform\geo\Locator'],
             'locale' => ['class' => 'yii\platform\locale\Locale'],
-            'updater' => ['class' => 'yii\platform\updaters\Updater'],
+            'runner' => ['class' => 'yii\platform\runners\Runner'],
         ]);
     }
     
     /**
-     * Returns the configuration of the built-in updaters.
-     * @return array the configuration of the built-in updaters.
+     * Returns the configuration of the built-in runners.
+     * @return array the configuration of the built-in runners.
      */
-    public function coreUpdaters()
+    public function coreRunners()
     {
         return [];
     }

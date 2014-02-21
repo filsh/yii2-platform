@@ -1,13 +1,13 @@
 <?php
 
-namespace yii\platform\updaters;
+namespace yii\platform\runners;
 
 use yii\platform\helpers\FileHelper;
 use yii\platform\geo\models\Regions;
 
-class RegionsUpdater extends BaseUpdater
+class RegionsRunner extends BaseRunner
 {
-    public $tmpPath = '@runtime/updater/regions';
+    public $tmpPath = '@runtime/runner/regions';
     
     public $sourceUrl;
     
