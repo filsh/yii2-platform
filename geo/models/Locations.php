@@ -79,9 +79,10 @@ class Locations extends \yii\db\ActiveRecord
         ];
     }
     
-    public static function createQuery()
+    public static function createQuery($config = [])
     {
-        return new LocationQuery(['modelClass' => get_called_class()]);
+        $config['modelClass'] = get_called_class();
+        return new LocationQuery($config);
     }
     
     /**
