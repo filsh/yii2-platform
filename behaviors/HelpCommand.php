@@ -35,7 +35,7 @@ class HelpCommand extends Behavior
         
         /* @var $controller \yii\console\controllers\HelpController */
         $controller = $result !== false ? $result[0] : null;
-        if ($controller === null || !($controller instanceof Controller)) {
+        if ($controller !== null || !($controller instanceof Controller)) {
             throw new Exception(P::t('platform', 'No help for this command.', [
                 'command' => $this->owner->ansiFormat('help', Console::FG_YELLOW),
             ]));
