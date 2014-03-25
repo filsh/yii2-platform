@@ -4,6 +4,9 @@ namespace yii\platform\console;
 
 class Application extends \yii\console\Application
 {
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return [
@@ -14,13 +17,11 @@ class Application extends \yii\console\Application
     }
     
     /**
-     * Registers the core application components.
-     * @see setComponents
+     * @inheritdoc
      */
-    public function registerCoreComponents()
+    public function coreComponents()
     {
-        parent::registerCoreComponents();
-        $this->setComponents([
+        return array_merge(parent::coreComponents(), [
             'urlManager' => ['class' => 'yii\platform\web\UrlManager'],
             'i18n' => ['class' => 'yii\platform\i18n\I18N'],
             'runner' => ['class' => 'yii\platform\runners\Runner'],
@@ -28,8 +29,7 @@ class Application extends \yii\console\Application
     }
     
     /**
-     * Returns the configuration of the built-in commands.
-     * @return array the configuration of the built-in commands.
+     * @inheritdoc
      */
     public function coreCommands()
     {

@@ -4,6 +4,9 @@ namespace yii\platform\web;
 
 class Application extends \yii\web\Application
 {
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return [
@@ -14,31 +17,11 @@ class Application extends \yii\web\Application
     }
     
     /**
-     * Returns the geo locator component.
-     * @return Locator the geo locator component
+     * @inheritdoc
      */
-    public function getGeoLocator()
+    public function coreComponents()
     {
-        return $this->getComponent('geoLocator');
-    }
-    
-    /**
-     * Returns the locale component.
-     * @return Locator the geo locator component
-     */
-    public function getLocale()
-    {
-        return $this->getComponent('locale');
-    }
-    
-    /**
-     * Registers the core application components.
-     * @see setComponents
-     */
-    public function registerCoreComponents()
-    {
-        parent::registerCoreComponents();
-        $this->setComponents([
+        return array_merge(parent::coreComponents(), [
             'urlManager' => ['class' => 'yii\platform\web\UrlManager'],
             'i18n' => ['class' => 'yii\platform\i18n\I18N'],
             'geoLocator' => ['class' => 'yii\platform\geo\Locator'],
@@ -54,5 +37,23 @@ class Application extends \yii\web\Application
     public function coreRunners()
     {
         return [];
+    }
+    
+    /**
+     * Returns the geo locator component.
+     * @return Locator the geo locator component
+     */
+    public function getGeoLocator()
+    {
+        return $this->get('geoLocator');
+    }
+    
+    /**
+     * Returns the locale component.
+     * @return Locator the geo locator component
+     */
+    public function getLocale()
+    {
+        return $this->get('locale');
     }
 }
