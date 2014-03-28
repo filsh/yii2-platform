@@ -1,6 +1,6 @@
 <?php
 
-namespace yii\platform\locale;
+namespace yii\platform\locale\detectors;
 
 use yii\platform\P;
 use yii\platform\geo\models\Timezones;
@@ -24,10 +24,9 @@ class GeoLocatorDetector extends Detector
             $query = Timezones::find()->where('country = :country', [':country' => $location->country]);
             
             if(!empty($location->region)) {
-                $query->andWhere('region = :region', [':region' => $location->region]);
+                $query->andWhere('region = :region OR region = \'\'', [':region' => $location->region]);
+                $query->orderBy('region DESC');
             }
-            
-            // add IN timezone condition
             if(!empty($timezones)) {
                 $query->andWhere(['timezone' => $timezones]);
             }

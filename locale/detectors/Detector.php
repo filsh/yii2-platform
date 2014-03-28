@@ -1,6 +1,6 @@
 <?php
 
-namespace yii\platform\locale;
+namespace yii\platform\locale\detectors;
 
 use yii\base\Object;
 

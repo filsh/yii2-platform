@@ -25,32 +25,27 @@ use yii\base\InvalidConfigException;
  *              'class' => 'yii\platform\locale\BrowserDetector',
  *              'detectTimezone' => false
  *          ]
- *      ],
- *      'acceptors' => [
- *          [
- *              'class' => 'yii\platform\locale\HttpParamAcceptor'
- *          ]
  *      ]
  *  ]
  * ~~~
  */
 class Locale extends \yii\base\Component
 {
+    /**
+     * @var array $detectors a list of the locale detectors
+     */
     public $detectors = [];
     
-    public $acceptors = [
-        [
-            'class' => 'yii\platform\locale\DefaultAcceptor'
-        ]
-    ];
-    
+    /**
+     * @var array $languages a list of the languages supported by the application. If this is empty,
+     * the current application language will be used
+     */
     public $locales = [];
     
     public function init()
     {
         parent::init();
-        
-        $this->locales = array_merge($this->locales, ['en', 'en-US']);
+        array_push($this->locales, 'en');
     }
     
     /**
@@ -77,44 +72,21 @@ class Locale extends \yii\base\Component
     }
     
     /**
-     * Returns the acceptor for the given configure.
-     * @param Detector|array $detector
-     * @return Detector
-     * @throws InvalidConfigException
-     */
-    public function getAcceptor($acceptor)
-    {
-        if($acceptor instanceof Acceptor) {
-            $class = get_class($acceptor);
-        } else if(isset($acceptor['class'])) {
-            $class = $acceptor['class'];
-        } else {
-            throw new InvalidConfigException("Unable to create locale acceptor '$acceptor'.");
-        }
-        
-        if(!isset($this->acceptors[$class])) {
-            $this->acceptors[$class] = P::createObject($acceptor);
-        }
-        
-        return $this->acceptors[$class];
-    }
-    
-    /**
      * Run detecting locale
      * @param type $default
      * @return string
      */
-    public function detectLocale($default = 'en-US')
+    public function detectLocale($default = 'en')
     {
         $locale = null;
         foreach($this->detectors as $detector) {
             if($locale === null) {
                 $detector = $this->getDetector($detector);
-                $locale = $detector->detectLocale ? $detector->detectLocale() : null;
+                $locale = $detector->detectLocale ? $detector->detectLocale($this->locales) : null;
             }
         }
         
-        return $this->acceptLocale($this->formatLocale($locale, $default));
+        return $this->formatLocale($locale, $default);
     }
     
     /**
@@ -132,54 +104,16 @@ class Locale extends \yii\base\Component
             }
         }
         
-        return $this->acceptTimezone($this->formatTimezone($timezone, $default));
+        return $this->formatTimezone($timezone, $default);
     }
     
     /**
-     * Run accepting locale
-     * @param type $default
-     * @return string
-     */
-    public function acceptLocale($locale)
-    {
-        foreach($this->acceptors as $acceptor) {
-            $acceptor = $this->getAcceptor($acceptor);
-            if($acceptor->acceptLocale && $acceptor->acceptLocale($locale) === true) {
-                return $locale;
-            }
-        }
-        if($locale !== P::$app->language) {
-            P::warning(sprintf('Locale \'%s\' is not accepted, still on default \'%s\'', $locale, P::$app->language), __CLASS__);
-        }
-        return $locale;
-    }
-    
-    /**
-     * Run accepting timezone
-     * @param type $default
-     * @return string
-     */
-    public function acceptTimezone($timezone)
-    {
-        foreach($this->acceptors as $acceptor) {
-            $acceptor = $this->getAcceptor($acceptor);
-            if($acceptor->acceptTimezone && $acceptor->acceptTimezone($timezone) === true) {
-                return $timezone;
-            }
-        }
-        if($timezone !== P::$app->getTimeZone()) {
-            P::warning(sprintf('Timezone \'%s\' is not accepted, still on default \'%s\'', $timezone, P::$app->getTimeZone()), __CLASS__);
-        }
-        return $timezone;
-    }
-    
-    /**
-     * Format language with region id
+     * Format language with region id supported
      * @param type $locale
      * @param type $default
      * @return string
      */
-    public function formatLocale($locale, $default = 'en-US')
+    public function formatLocale($locale, $default = 'en')
     {
         if($locale === null) {
             return $default;
@@ -198,7 +132,7 @@ class Locale extends \yii\base\Component
         if(in_array($formated, $this->locales)) {
             $locale = $formated;
         } else if(in_array($lang, $this->locales)) {
-            $locale = $lang === 'en' ? 'en-US' : $lang;
+            $locale = $lang;
         } else {
             P::warning(sprintf('Formatted language \'%s\' is not supported, reset to default \'%s\'', $locale, $default), __CLASS__);
             $locale = $default;
@@ -215,14 +149,10 @@ class Locale extends \yii\base\Component
      */
     public function formatTimezone($timezone, $default = 'UTC')
     {
-        if($timezone === null) {
-            return $default;
-        }
-        
-        if(!in_array($timezone, DateTimeZone::listIdentifiers())) {
+        if($timezone === null || !in_array($timezone, DateTimeZone::listIdentifiers())) {
             P::warning(sprintf(
                     'Formatted timezone \'%s\' is not supported, reset to default \'%s\'', $timezone, $default), __CLASS__);
-            $timezone = $default;
+            return $default;
         }
         
         return $timezone;

@@ -1,6 +1,6 @@
 <?php
 
-namespace yii\platform\locale;
+namespace yii\platform\locale\detectors;
 
 use yii\platform\P;
 
@@ -15,7 +15,7 @@ class HttpParamDetector extends Detector
             return $language;
         }
         
-        return empty($locales) ? $language : null;
+        return null;
     }
     
     public function detectTimezone($timezones = [])
