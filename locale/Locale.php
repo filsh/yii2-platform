@@ -40,12 +40,20 @@ class Locale extends \yii\base\Component
      * @var array $languages a list of the languages supported by the application. If this is empty,
      * the current application language will be used
      */
-    public $locales = [];
+    public $enableLocales = ['en'];
+    
+    /**
+     * @var array $languages a list of the languages supported by the application. If this is empty,
+     * the current application language will be used
+     */
+    public $defaultLocale = 'en';
     
     public function init()
     {
         parent::init();
-        array_push($this->locales, 'en');
+        if(!in_array($this->defaultLocale, $this->enableLocales)) {
+            throw new \yii\base\InvalidParamException('Default locale must be contained in the enable locales list.');
+        }
     }
     
     /**
@@ -82,7 +90,7 @@ class Locale extends \yii\base\Component
         foreach($this->detectors as $detector) {
             if($locale === null) {
                 $detector = $this->getDetector($detector);
-                $locale = $detector->detectLocale ? $detector->detectLocale($this->locales) : null;
+                $locale = $detector->detectLocale ? $detector->detectLocale($this->enableLocales) : null;
             }
         }
         
@@ -129,9 +137,9 @@ class Locale extends \yii\base\Component
         }
 
         $formated = implode('-', [$lang, $region]);
-        if(in_array($formated, $this->locales)) {
+        if(in_array($formated, $this->enableLocales)) {
             $locale = $formated;
-        } else if(in_array($lang, $this->locales)) {
+        } else if(in_array($lang, $this->enableLocales)) {
             $locale = $lang;
         } else {
             P::warning(sprintf('Formatted language \'%s\' is not supported, reset to default \'%s\'', $locale, $default), __CLASS__);

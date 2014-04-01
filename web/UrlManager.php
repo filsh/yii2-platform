@@ -2,20 +2,13 @@
 
 namespace yii\platform\web;
 
+use \yii\platform\helpers\MultilangHelper;
+
 class UrlManager extends \yii\web\UrlManager
 {
-    protected $params = [];
-    
     public function createUrl($params)
     {
-        if(!is_array($params)) {
-            $params = array($params);
-        }
-        return parent::createUrl($params + $this->params);
-    }
-    
-    public function setParam($key, $value)
-    {
-        $this->params[$key] = $value;
+        $url = parent::createUrl($params);
+        return MultilangHelper::addLangToUrl($url);
     }
 }

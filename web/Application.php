@@ -23,6 +23,7 @@ class Application extends \yii\web\Application
     {
         return array_merge(parent::coreComponents(), [
             'urlManager' => ['class' => 'yii\platform\web\UrlManager'],
+            'request' => ['class' => 'yii\platform\web\Request'],
             'i18n' => ['class' => 'yii\platform\i18n\I18N'],
             'geoLocator' => ['class' => 'yii\platform\geo\Locator'],
             'locale' => ['class' => 'yii\platform\locale\Locale'],
