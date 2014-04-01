@@ -15,48 +15,46 @@ class LocaleBootstrap implements BootstrapInterface
     public function bootstrap(Application $app)
     {
         $this->_resolvedRequest = P::$app->getRequest()->resolve();
-        $timezone = P::$app->getLocale()->detectTimezone(P::$app->timeZone);
         
-        if(($locale = $this->detectLocale())) {
-            P::$app->setLanguage($locale);
-            P::$app->setTimeZone($timezone);
+        $lang = $this->detectLanguage();
+        $this->checkRedirect($lang);
+        
+        if(P::$app->language !== $lang) {
+            P::$app->setLanguage($lang);
+            P::$app->getUrlManager()->setParam($this->paramLang, $lang);
+        }
+        
+        $timezone = P::$app->getLocale()->detectTimezone(P::$app->timeZone);
+        P::$app->setTimeZone($timezone);
+    }
+    
+    protected function detectLanguage()
+    {
+        $locale = P::$app->getLocale();
+        $detected = $locale->detectLocale(P::$app->language);
+        return $locale->getLanguage($detected);
+    }
+    
+    protected function checkRedirect($lang)
+    {
+        $params = $this->getRouteParams();
+        
+        if(P::$app->language === $lang) {
+            if(isset($params[$this->paramLang])) {
+                unset($params[$this->paramLang]);
+                $this->redirectTo($params);
+            }
+        } else if(!isset($params[$this->paramLang]) || $params[$this->paramLang] !== $lang) {
+            $params[$this->paramLang] = $lang;
+            $this->redirectTo($params);
         }
     }
     
-    protected function detectLocale()
+    protected function redirectTo($params)
     {
-        $needRedirect = false;
-        $cookies = P::$app->getResponse()->cookies;
-        $cookie = $cookies->get($this->paramLang);
-        $params = P::$app->getRequest()->getQueryParams();
-        
-        $locale = P::$app->getLocale()->detectLocale(P::$app->language);
-        
-        if($cookie === null) {
-            $cookie = new \yii\web\Cookie([
-                'name' => $this->paramLang,
-                'value' => $locale
-            ]);
-            $cookies->add($cookie);
-            
-            if(!isset($params[$this->paramLang]) && $locale !== P::$app->language) {
-                $params[$this->paramLang] = $locale;
-                $needRedirect = true;
-            } else if(isset($params[$this->paramLang]) && $locale === P::$app->language) {
-                unset($params[$this->paramLang]);
-                $needRedirect = true;
-            }
-        } else {
-            $locale = $cookie->value;
-        }
-        
-        if($needRedirect) {
-            array_unshift($params, $this->getRoute());
-            $url = P::$app->getUrlManager()->createUrl($params);
-            P::$app->getResponse()->redirect($url);
-        }
-        
-        return $locale;
+        array_unshift($params, $this->getRoute());
+        $url = P::$app->getUrlManager()->createUrl($params);
+        P::$app->getResponse()->redirect($url);
     }
     
     protected function getRoute()
@@ -67,5 +65,10 @@ class LocaleBootstrap implements BootstrapInterface
             $route = P::$app->controller->getRoute();
         }
         return $route;
+    }
+    
+    protected function getRouteParams()
+    {
+        return $this->_resolvedRequest[1];
     }
 }

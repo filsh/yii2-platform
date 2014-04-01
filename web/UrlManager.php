@@ -4,15 +4,18 @@ namespace yii\platform\web;
 
 class UrlManager extends \yii\web\UrlManager
 {
-//    protected $params = [];
-//    
-//    public function createUrl($route, $params = [])
-//    {var_dump($params);exit;
-//        return parent::createUrl($route, array_merge($this->params, $params));
-//    }
-//    
-//    public function setParam($key, $value)
-//    {
-//        $this->params[$key] = $value;
-//    }
+    protected $params = [];
+    
+    public function createUrl($params)
+    {
+        if(!is_array($params)) {
+            $params = array($params);
+        }
+        return parent::createUrl($params + $this->params);
+    }
+    
+    public function setParam($key, $value)
+    {
+        $this->params[$key] = $value;
+    }
 }
