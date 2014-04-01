@@ -16,5 +16,8 @@ class I18nBootstrap implements BootstrapInterface
             P::warning(sprintf(
                 'Missing translation message "%s:%s:%s"', $event->category, $event->message, $event->language), get_class($event->sender));
         });
+        
+        $timezone = P::$app->getLocale()->detectTimezone(P::$app->timeZone);
+        P::$app->setTimeZone($timezone);
     }
 }
