@@ -4,6 +4,12 @@ namespace yii\platform\console;
 
 class Application extends \yii\console\Application
 {
+    public function __construct(Sandbox $sandbox)
+    {
+        $config = $sandbox->getConfig();
+        parent::__construct($config);
+    }
+    
     /**
      * @inheritdoc
      */

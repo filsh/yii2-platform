@@ -2,8 +2,16 @@
 
 namespace yii\platform\web;
 
+use \yii\platform\sandbox\Sandbox;
+
 class Application extends \yii\web\Application
 {
+    public function __construct(Sandbox $sandbox)
+    {
+        $config = $sandbox->getConfig();
+        parent::__construct($config);
+    }
+    
     /**
      * @inheritdoc
      */
