@@ -2,11 +2,16 @@
 
 namespace yii\platform\console;
 
+use \yii\platform\sandbox\Sandbox;
+
 class Application extends \yii\console\Application
 {
     public function __construct(Sandbox $sandbox)
     {
-        $config = $sandbox->getConfig();
+        $this->set('sandbox', $sandbox);
+        $this->sandbox->resolve();
+        $config = $this->sandbox->getConfig();
+        
         parent::__construct($config);
     }
     
@@ -29,6 +34,7 @@ class Application extends \yii\console\Application
     {
         return array_merge(parent::coreComponents(), [
             'urlManager' => ['class' => 'yii\platform\web\UrlManager'],
+            'request' => ['class' => 'yii\platform\console\Request'],
             'i18n' => ['class' => 'yii\platform\i18n\I18N'],
             'runner' => ['class' => 'yii\platform\runners\Runner'],
         ]);

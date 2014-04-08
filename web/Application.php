@@ -8,7 +8,10 @@ class Application extends \yii\web\Application
 {
     public function __construct(Sandbox $sandbox)
     {
-        $config = $sandbox->getConfig();
+        $this->set('sandbox', $sandbox);
+        $this->sandbox->resolve();
+        $config = $this->sandbox->getConfig();
+        
         parent::__construct($config);
     }
     

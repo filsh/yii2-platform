@@ -2,7 +2,7 @@
 
 namespace yii\platform\sandbox;
 
-class DomainRegexpRule extends Rule
+class HostRegexpRule extends Rule
 {
     public $includePattern;
     

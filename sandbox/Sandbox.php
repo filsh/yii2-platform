@@ -6,44 +6,43 @@ use yii\platform\P;
 
 class Sandbox extends \yii\base\Component
 {
-    public $projectId;
+    public $projects;
     
-    public $siteId;
+    protected $config;
     
-    public $config;
+    protected $projectId;
     
-    public static function factory(array $config)
+    protected $siteId;
+    
+    public function resolve()
     {
-        list($config, $projectId, $siteId) = self::resolveConfig($config);
-        if(!isset($config['class'])) {
-            $config['class'] = get_called_class();
-        }
-        
-        return P::createObject([
-            'class' => $config['class'],
-            'config' => $config['config'],
-            'projectId' => $projectId,
-            'siteId' => $siteId
-        ]);
-    }
-    
-    public static function resolveConfig(array $config)
-    {
-        foreach($config as $projectId => $project) {
-            foreach($project as $siteId => $site) {
-                if(!isset($site['rule']) || !isset($site['config'])) {
-                    throw new \yii\base\InvalidParamException('Invalid config given.');
-                }
-                
-                /* @var $rule Rule */
-                $rule = P::createObject($site['rule']);
-                if($rule->isValid()) {
-                    return [$site, $projectId, $siteId];
-                }
+        foreach($this->projects as $project) {
+            if(!isset($project['rule'])) {
+                throw new \yii\base\InvalidParamException('Invalid project config given.');
+            }
+            
+            /* @var $rule Rule */
+            $rule = P::createObject($project['rule']);
+            if($rule->isValid()) {
+                $this->config = $project['config'];
+                $this->projectId = $project['project_id'];
+                $this->siteId = $project['site_id'];
             }
         }
         
-        throw new \yii\base\InvalidConfigException('Application sandbox configuration not found.');
+        if(empty($this->projectId) || empty($this->siteId) || empty($this->config)) {
+            throw new \yii\base\InvalidParamException('Invalid project config given.');
+        }
+    }
+    
+    public function getProjectId()
+    {
+        return $this->projectId;
+    }
+    
+    public function getSiteId()
+    {
+        return $this->siteId;
     }
     
     public function getConfig()
