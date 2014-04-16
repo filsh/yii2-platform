@@ -9,7 +9,7 @@ class Request extends \yii\console\Request
         list($route, $params) = parent::resolve();
         if(!empty($params)) {
             foreach($params as $name => $param) {
-                if($name === \yii\platform\sandbox\HostRegexpConsoleRule::OPTION_APPHOST) {
+                if($name === Application::OPTION_APPHOST) {
                     unset($params[$name]);
                     break;
                 }

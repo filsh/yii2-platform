@@ -4,13 +4,12 @@ namespace yii\platform\bootstraps;
 
 use yii\platform\P;
 use yii\base\Event;
-use yii\base\Application;
 use yii\base\BootstrapInterface;
 use yii\i18n\GettextMessageSource;
 
 class I18nBootstrap implements BootstrapInterface
 {
-    public function bootstrap(Application $app)
+    public function bootstrap($app)
     {
         Event::on('yii\i18n\GettextMessageSource', GettextMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {
             P::warning(sprintf(

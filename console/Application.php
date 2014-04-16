@@ -6,6 +6,11 @@ use \yii\platform\sandbox\Sandbox;
 
 class Application extends \yii\console\Application
 {
+    /**
+     * The option name for specifying the application project host.
+     */
+    const OPTION_APPHOST = 'apphost';
+    
     public function __construct(Sandbox $sandbox)
     {
         $this->set('sandbox', $sandbox);

@@ -18,7 +18,7 @@ class Sandbox extends \yii\base\Component
     {
         foreach($this->projects as $project) {
             if(!isset($project['rule'])) {
-                throw new \yii\base\InvalidParamException('Invalid project config given.');
+                throw new \yii\base\InvalidParamException('Invalid sandbox project config given.');
             }
             
             /* @var $rule Rule */
@@ -31,7 +31,7 @@ class Sandbox extends \yii\base\Component
         }
         
         if(empty($this->projectId) || empty($this->siteId) || empty($this->config)) {
-            throw new \yii\base\InvalidParamException('Invalid project config given.');
+            throw new \yii\base\InvalidParamException('Invalid sandbox project config given.');
         }
     }
     
