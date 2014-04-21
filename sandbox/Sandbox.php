@@ -50,7 +50,7 @@ class Sandbox extends \yii\base\Component
     {
         $app->set('sandbox', $this);
         
-        if(($app instanceof \yii\platform\web\Application)) {
+        if(($app instanceof \yii\platform\web\Application) && !($app instanceof \yii\platform\api\Application)) {
             $app->setViewPath(MultiHelper::multipath($this, $app->getViewPath()));
         }
     }
