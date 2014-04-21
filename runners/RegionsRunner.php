@@ -24,10 +24,12 @@ class RegionsRunner extends BaseRunner
     public function resolveFile($file)
     {
         if(!is_file($file)) {
-            throw new Exception('Source file not found.');
+            throw new \yii\base\Exception('Source file not found.');
         }
         
-        $this->applyCsv($file);
+        if(!$this->applyCsv($file)) {
+            throw new \yii\base\Exception('Source file not applyed.');
+        }
     }
     
     protected function applyCsv($file)
@@ -35,6 +37,7 @@ class RegionsRunner extends BaseRunner
         $regionColumns = ['country', 'region', 'name', 'create_time', 'update_time'];
         $regionDuplicates = ['country', 'region', 'name'];
         
+        $return = false;
         $regionRows = [];
         if (($handle = fopen($file, 'r')) !== false) {
             while (($data = fgetcsv($handle, 1000, ',')) !== false) {
@@ -42,6 +45,7 @@ class RegionsRunner extends BaseRunner
                     continue;
                 }
                 
+                $return = true;
                 $regionRows[] = [
                     trim($data[0]),
                     trim($data[1]),
@@ -62,5 +66,7 @@ class RegionsRunner extends BaseRunner
             
             fclose($handle);
         }
+        
+        return $return;
     }
 }

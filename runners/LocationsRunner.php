@@ -7,7 +7,6 @@ use yii\platform\geo\models\Locations;
 use yii\platform\geo\models\LocationBlock;
 use yii\platform\geo\models\LocationPoint;
 use yii\db\Expression;
-use yii\base\Exception;
 
 class LocationsRunner extends BaseRunner
 {
@@ -31,11 +30,11 @@ class LocationsRunner extends BaseRunner
     public function resolveFile($file)
     {
         if(!is_file($file)) {
-            throw new Exception('Source file not found.');
+            throw new \yii\base\Exception('Source file not found.');
         }
         
         if(!class_exists('\ZipArchive')) {
-            throw new Exception('Not exist ZipArchive class, your must install PECL zip library.');
+            throw new \yii\base\Exception('Not exist ZipArchive class, your must install PECL zip library.');
         }
         
         $z = new \ZipArchive();

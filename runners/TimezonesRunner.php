@@ -24,7 +24,7 @@ class TimezonesRunner extends BaseRunner
     public function resolveFile($file)
     {
         if(!is_file($file)) {
-            throw new Exception('Source file not found.');
+            throw new \yii\base\Exception('Source file not found.');
         }
         
         $this->applyCsv($file);

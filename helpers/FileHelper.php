@@ -23,9 +23,10 @@ class FileHelper extends \yii\helpers\FileHelper
         
         $handle = @fopen($file, 'w');
         $curlOptions = [
-            CURLOPT_FILE    => $handle,
-            CURLOPT_TIMEOUT => 10 * 60,
-            CURLOPT_URL     => $fileUrl,
+            CURLOPT_FILE            => $handle,
+            CURLOPT_TIMEOUT         => 10 * 60,
+            CURLOPT_URL             => $fileUrl,
+            CURLOPT_FOLLOWLOCATION  => true
         ];
 
         $ch = curl_init();

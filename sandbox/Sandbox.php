@@ -3,7 +3,9 @@
 namespace yii\platform\sandbox;
 
 use yii\platform\P;
+use yii\platform\helpers\MultiHelper;
 use yii\helpers\ArrayHelper;
+use yii\base\Application;
 
 class Sandbox extends \yii\base\Component
 {
@@ -38,17 +40,26 @@ class Sandbox extends \yii\base\Component
         unset($config['class']);
         
         $config = ArrayHelper::merge($this->getConfig(), $config);
-        $application = new $class($config);
-        $application->set('sandbox', $this);
+        $app = new $class($config);
+        $this->decorateApplication($app);
         
-        return $application;
+        return $app;
     }
     
-    private function resolve()
+    protected function decorateApplication(Application $app)
+    {
+        $app->set('sandbox', $this);
+        
+        if(($app instanceof \yii\platform\web\Application)) {
+            $app->setViewPath(MultiHelper::multipath($this, $app->getViewPath()));
+        }
+    }
+    
+    protected function resolve()
     {
         foreach($this->projects as $project) {
             if(!isset($project['rule'])) {
-                throw new \yii\base\InvalidParamException('Invalid sandbox project config given.');
+                throw new \yii\base\InvalidConfigException('Invalid sandbox project config given.');
             }
             
             /* @var $rule Rule */
@@ -61,31 +72,20 @@ class Sandbox extends \yii\base\Component
         }
         
         if(empty($this->projectId) || empty($this->siteId)) {
-            echo "Error: project configuration is invalid or not found.\n";
-            exit(1);
+            throw new NotDetectingException('Project configuration is invalid or not found.');
         }
     }
     
-    private function getConfig()
+    protected function getConfig()
     {
         $config = [];
         foreach($this->configBasePaths as $path) {
             foreach($this->configFileNames as $fileName) {
-                $filePath = $this->getFilePath($path, $fileName);
+                $filePath = MultiHelper::multipath($this, $path . '/config', $fileName);
                 $config = ArrayHelper::merge($config, require($filePath));
             }
         }
         
         return $config;
-    }
-    
-    private function getFilePath($basePath, $fileName, $type = 'config')
-    {
-        $path = sprintf('%s/%s/p%d/s%d/%s', $basePath, $type, $this->projectId, $this->siteId, $fileName);
-        $filePath = realpath($path);
-        if(!$filePath) {
-            throw new \yii\base\InvalidParamException('File path is invalid or not exists [' . $path . '].');
-        }
-        return $filePath;
     }
 }
