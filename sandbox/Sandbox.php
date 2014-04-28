@@ -5,7 +5,6 @@ namespace yii\platform\sandbox;
 use yii\platform\P;
 use yii\platform\helpers\MultiHelper;
 use yii\helpers\ArrayHelper;
-use yii\base\Application;
 
 class Sandbox extends \yii\base\Component
 {
@@ -41,18 +40,9 @@ class Sandbox extends \yii\base\Component
         
         $config = ArrayHelper::merge($this->getConfig(), $config);
         $app = new $class($config);
-        $this->decorateApplication($app);
-        
-        return $app;
-    }
-    
-    protected function decorateApplication(Application $app)
-    {
         $app->set('sandbox', $this);
         
-        if($app instanceof \yii\platform\web\Application) {
-            $app->setViewPath(MultiHelper::multipath($this, $app->getViewPath()));
-        }
+        return $app;
     }
     
     protected function resolve()
@@ -81,7 +71,7 @@ class Sandbox extends \yii\base\Component
         $config = [];
         foreach($this->configBasePaths as $path) {
             foreach($this->configFileNames as $fileName) {
-                $filePath = MultiHelper::multipath($this, $path . '/config', $fileName);
+                $filePath = MultiHelper::multipath($this, $path, 'config/' . $fileName);
                 $config = ArrayHelper::merge($config, require($filePath));
             }
         }
