@@ -30,19 +30,24 @@ class Sandbox extends \yii\base\Component
     
     public function createApplication($config = [])
     {
-        if(empty($config['class'])) {
-            throw new \yii\base\InvalidParamException('Application class must be specified.');
+        try {
+            if(empty($config['class'])) {
+                throw new \yii\base\InvalidParamException('Application class must be specified.');
+            }
+
+            $this->resolve();
+            $class = $config['class'];
+            unset($config['class']);
+
+            $config = ArrayHelper::merge($this->getConfig(), $config);
+            $app = new $class($config);
+            $app->set('sandbox', $this);
+
+            return $app;
+        } catch(NotDetectingException $e) {
+            echo $e->getMessage();
+            die("\n\n");
         }
-        
-        $this->resolve();
-        $class = $config['class'];
-        unset($config['class']);
-        
-        $config = ArrayHelper::merge($this->getConfig(), $config);
-        $app = new $class($config);
-        $app->set('sandbox', $this);
-        
-        return $app;
     }
     
     protected function resolve()

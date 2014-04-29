@@ -12,7 +12,7 @@ class HostRegexpRule extends Rule
     {
         $value = $this->getValue();
         if (!$value || !is_string($value)) {
-            throw new \yii\base\InvalidParamException('Invalid value given, value should be string.');
+            throw new NotDetectingException('Invalid value given or host is not detecting.');
         }
         if(!$this->includePattern || !is_string($this->includePattern)) {
             throw new \yii\base\InvalidParamException('Invalid value given, include pattern should be valid regular expression.');
