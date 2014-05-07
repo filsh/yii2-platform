@@ -69,4 +69,23 @@ class FileHelper extends \yii\helpers\FileHelper
         
         return $file;
     }
+    
+    public static function getMimeTypeFromExternal($fileUrl, $checkExtension = true)
+    {
+        $mimeType = null;
+        $fn = tmpfile();
+        if($fn) {
+            $metaData = stream_get_meta_data($fn);
+            if(!empty($metaData['uri']) && file_exists($metaData['uri'])) {
+                file_put_contents($metaData['uri'], file_get_contents($fileUrl));
+                $mimeType = self::getMimeType($metaData['uri']);
+            }
+            fclose($fn);
+            if(!empty($mimeType)) {
+                return $mimeType;
+            }
+        }
+        
+        return $checkExtension ? static::getMimeTypeByExtension($fileUrl) : null;
+    }
 }
