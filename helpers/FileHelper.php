@@ -2,6 +2,8 @@
 
 namespace yii\platform\helpers;
 
+use yii\platform\P;
+
 class FileHelper extends \yii\helpers\FileHelper
 {
     /**
@@ -68,6 +70,11 @@ class FileHelper extends \yii\helpers\FileHelper
         }
         
         return $file;
+    }
+    
+    public static function getExtension($file)
+    {
+        return (($ext = pathinfo($file, PATHINFO_EXTENSION)) !== '') ? strtolower($ext) : null;
     }
     
     public static function getMimeTypeFromExternal($fileUrl, $checkExtension = true)
