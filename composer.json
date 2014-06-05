@@ -16,8 +16,7 @@
 		}
 	],
 	"require": {
-                "yiisoft/yii2": "*",
-                "gabrielbull/gearman-handler": "*"
+                "yiisoft/yii2": "*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\platform\\": "" }
