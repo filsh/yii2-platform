@@ -2,6 +2,7 @@
 
 namespace yii\platform\behaviors;
 
+use yii\platform\P;
 use yii\base\Behavior;
 
 class Log extends Behavior
@@ -30,7 +31,7 @@ class Log extends Behavior
             }
             $log[] = $logStr;
         }
-        return implode(PHP_EOL, $log) . PHP_EOL;
+        return implode(PHP_EOL, $log);
     }
     
     public function addLog($key, $message = '')
@@ -49,5 +50,14 @@ class Log extends Behavior
                 'message' => $message,
             );
         }
+    }
+    
+    public function flushLog($level, $category)
+    {
+        $logs = explode(PHP_EOL, $this->getLog());
+        foreach($logs as $message) {
+            P::getLogger()->log($message, $level, $category);
+        }
+        P::getLogger()->flush(true);
     }
 }
