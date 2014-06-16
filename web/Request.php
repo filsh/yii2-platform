@@ -2,6 +2,7 @@
 
 namespace yii\platform\web;
 
+use \yii\platform\P;
 use \yii\platform\helpers\MultilangHelper;
 
 class Request extends \yii\web\Request
@@ -11,7 +12,11 @@ class Request extends \yii\web\Request
     protected function resolveRequestUri()
     {
         if ($this->_requestUri === null) {
-            $this->_requestUri = MultilangHelper::resolveLangFromUrl(parent::resolveRequestUri());
+            $this->_requestUri = parent::resolveRequestUri();
+            
+            if(P::$app->getUrlManager()->enableAppendLang) {
+                $this->_requestUri = MultilangHelper::resolveLangFromUrl($this->_requestUri);
+            }
         }
         
         return $this->_requestUri;
