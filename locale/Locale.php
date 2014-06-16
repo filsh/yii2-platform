@@ -58,13 +58,13 @@ class Locale extends \yii\base\Component
     
     /**
      * Returns the detector for the given configure.
-     * @param Detector|array $detector
-     * @return Detector
+     * @param detectors\Detector|array $detector
+     * @return detectors\Detector
      * @throws InvalidConfigException
      */
     public function getDetector($detector)
     {
-        if($detector instanceof Detector) {
+        if($detector instanceof detectors\Detector) {
             $class = get_class($detector);
         } else if(isset($detector['class'])) {
             $class = $detector['class'];

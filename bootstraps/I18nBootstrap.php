@@ -16,6 +16,9 @@ class I18nBootstrap implements BootstrapInterface
         
         $timezone = P::$app->getLocale()->detectTimezone(P::$app->timeZone);
         P::$app->setTimeZone($timezone);
+        
+        $locale = P::$app->getLocale()->detectLocale(P::$app->language);
+        P::$app->setLanguage($locale);
     }
     
     public function onMissingTranslation($event)
