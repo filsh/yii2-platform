@@ -8,6 +8,8 @@ class HttpParamDetector extends Detector
 {
     public $paramLang = 'lang';
     
+    public $paramTimezone = 'timezone';
+    
     public function detectLocale($locales = [])
     {
         $language = P::$app->getRequest()->getQueryParam($this->paramLang);
@@ -20,7 +22,11 @@ class HttpParamDetector extends Detector
     
     public function detectTimezone($timezones = [])
     {
-        // TODO: логика по определению часового пояса на клиенте и передача его в GET параметре
+        $timezone = P::$app->getRequest()->getQueryParam($this->paramTimezone);
+        if(in_array($timezone, $timezones)) {
+            return $timezone;
+        }
+        
         return null;
     }
 }

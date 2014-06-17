@@ -37,10 +37,16 @@ class Locale extends \yii\base\Component
     public $detectors = [];
     
     /**
-     * @var array $languages a list of the languages supported by the application. If this is empty,
+     * @var array $enableLocales a list of the languages supported by the application. If this is empty,
      * the current application language will be used
      */
     public $enableLocales = ['en'];
+    
+    /**
+     * @var array $enableTimezones a list of the timezones supported by the application. If this is empty,
+     * the current application timezone will be used
+     */
+    public $enableTimezones = ['UTC'];
     
     /**
      * @var array $languages a list of the languages supported by the application. If this is empty,
@@ -108,7 +114,7 @@ class Locale extends \yii\base\Component
         foreach($this->detectors as $detector) {
             if($timezone === null) {
                 $detector = $this->getDetector($detector);
-                $timezone = $detector->detectTimezone ? $detector->detectTimezone() : null;
+                $timezone = $detector->detectTimezone ? $detector->detectTimezone($this->enableTimezones) : null;
             }
         }
         

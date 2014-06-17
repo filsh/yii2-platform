@@ -19,24 +19,6 @@ class GeoLocatorDetector extends Detector
      */
     public function detectTimezone($timezones = [])
     {
-        $location = P::$app->getGeoLocator()->getLocation();
-        if($location !== null && !empty($location->country)) {
-            $query = Timezones::find()->where('country = :country', [':country' => $location->country]);
-            
-            if(!empty($location->region)) {
-                $query->andWhere('region = :region OR region = \'\'', [':region' => $location->region]);
-                $query->orderBy('region DESC');
-            }
-            if(!empty($timezones)) {
-                $query->andWhere(['timezone' => $timezones]);
-            }
-            
-            $mTimezones = $query->one();
-            if($mTimezones !== null) {
-                return $mTimezones->timezone;
-            }
-        }
-        
-        return null;
+        return P::$app->getGeoLocator()->getTimezone($timezones);
     }
 }
