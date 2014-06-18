@@ -17,6 +17,8 @@ namespace yii\platform\geo\models;
  */
 class Locations extends \yii\db\ActiveRecord
 {
+    const FIND_REGION_DISTANCE = 100;
+    
     public $distance;
     
     public $point;
@@ -52,7 +54,7 @@ class Locations extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['country'], 'required'],
+            [['country', 'latitude', 'longitude'], 'required'],
             [['latitude', 'longitude'], 'number'],
             [['create_time', 'update_time'], 'integer'],
             [['country', 'region'], 'string', 'max' => 2],
@@ -93,5 +95,34 @@ class Locations extends \yii\db\ActiveRecord
     public function getPoint()
     {
         return $this->hasOne(LocationPoint::className(), ['id' => 'id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveRelation
+     */
+    public function getTimezone(array $timezones = [])
+    {
+        $region = $this->region;
+        if(empty($region)) {
+            $location = self::find()
+                ->fromPoint((float)$this->latitude, (float)$this->longitude, self::FIND_REGION_DISTANCE)
+                ->andWhere('region IS NOT NULL AND region <> \'\'')
+                ->andWhere('country = :country', [':country' => $this->country])
+                ->limit(1)
+                ->one();
+            
+            $region = $location->region;
+        }
+        
+        $query = Timezones::find()->where('country = :country', [':country' => $this->country]);
+        if(!empty($region)) {
+            $query->andWhere('region = :region', [':region' => $region]);
+            $query->orderBy('region DESC');
+        }
+        if(!empty($timezones)) {
+            $query->andWhere(['timezone' => $timezones]);
+        }
+        
+        return $query;
     }
 }

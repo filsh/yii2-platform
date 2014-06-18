@@ -209,28 +209,15 @@ class Locator extends Component
     
     public function getTimezone(array $timezones = [])
     {
-        if($this->_timezone !== null) {
-            return $this->_timezone;
-        }
-        
-        $location = $this->getLocation();
-        if($location !== null && !empty($location->country)) {
-            $query = Timezones::find()->where('country = :country', [':country' => $location->country]);
-            
-            if(!empty($location->region)) {
-                $query->andWhere('region = :region OR region = \'\'', [':region' => $location->region]);
-                $query->orderBy('region DESC');
-            }
-            if(!empty($timezones)) {
-                $query->andWhere(['timezone' => $timezones]);
-            }
-            
-            $mTimezones = $query->one();
-            if($mTimezones !== null) {
-                $this->_timezone = $mTimezones->timezone;
+        if($this->_timezone === null) {
+            $location = $this->getLocation();
+            if($location !== null) {
+                $timezone = $location->getTimezone($timezones)->one();
+                if($timezone !== null) {
+                    $this->_timezone = $timezone->timezone;
+                }
             }
         }
-        
         return $this->_timezone;
     }
 }
