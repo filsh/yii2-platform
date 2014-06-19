@@ -116,8 +116,13 @@ class Locations extends \yii\db\ActiveRecord
         
         $query = Timezones::find()->where('country = :country', [':country' => $this->country]);
         if(!empty($region)) {
-            $query->andWhere('region = :region', [':region' => $region]);
-            $query->orderBy('region DESC');
+            $cloned = clone $query;
+            $cloned->andWhere('region = :region', [':region' => $region]);
+            $cloned->orderBy('region DESC');
+            
+            if($cloned->exists()) {
+                $query = $cloned;
+            }
         }
         if(!empty($timezones)) {
             $query->andWhere(['timezone' => $timezones]);
