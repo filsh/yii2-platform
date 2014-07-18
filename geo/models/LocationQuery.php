@@ -36,7 +36,7 @@ class LocationQuery extends ActiveQuery
     public function fromBlock($addr)
     {
         if (!is_scalar($addr)) {
-            throw new AppException('Location address is not valid.');
+            throw new Exception('Location address is not valid.');
         }
         
         $block = LocationBlock::find()

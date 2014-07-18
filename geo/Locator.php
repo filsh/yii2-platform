@@ -49,7 +49,7 @@ class Locator extends Component
         parent::init();
         
         $request =  P::$app->getRequest();
-        $this->address = $request->getUserIP();
+        $this->address = ($address = $request->getUserIP()) === null ? '127.0.0.1' : $address;
         $this->latitude = (float) $request->getQueryParam($this->latitudeParamName);
         $this->longitude = (float) $request->getQueryParam($this->longitudeParamName);
     }
