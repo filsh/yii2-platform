@@ -79,7 +79,7 @@ class Message extends ActiveRecord
     /**
      * TODO: add caching
      */
-    public static function initMessage($category, $language, $message, $translation)
+    public static function initDbMessage($category, $language, $message, $translation)
     {
         $transaction = self::getDb()->beginTransaction();
         try {
