@@ -10,7 +10,7 @@ class Sandbox extends \yii\base\Component
 {
     public $configBasePaths = [];
     
-    public $configFileNames = ['main.php', 'main-local.php'];
+    public $configFileNames = ['main.php'];
     
     public $projects;
     
@@ -80,11 +80,12 @@ class Sandbox extends \yii\base\Component
             }
 
             $this->resolve();
-            $class = $config['class'];
+            $className = $config['class'];
             unset($config['class']);
 
             $config = ArrayHelper::merge($this->getConfig(), $config);
-            $app = new $class($config);
+            
+            $app = new $className($config);
             $app->set('sandbox', $this);
 
             return $app;
