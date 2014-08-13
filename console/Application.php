@@ -56,6 +56,7 @@ class Application extends \yii\console\Application
             'locations' => 'yii\platform\runners\LocationsRunner',
             'regions' => 'yii\platform\runners\RegionsRunner',
             'timezones' => 'yii\platform\runners\TimezonesRunner',
+            'countries' => 'yii\platform\runners\CountriesRunner',
         ];
     }
 }

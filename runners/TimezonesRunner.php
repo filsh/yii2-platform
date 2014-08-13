@@ -32,17 +32,17 @@ class TimezonesRunner extends BaseRunner
     
     protected function applyCsv($file)
     {
-        $regionColumns = ['country', 'region', 'timezone', 'create_time', 'update_time'];
-        $regionDuplicates = ['country', 'region', 'timezone'];
+        $dataColumns = ['country', 'region', 'timezone', 'create_time', 'update_time'];
+        $dataDuplicates = ['country', 'region', 'timezone'];
         
-        $regionRows = [];
+        $dataRows = [];
         if (($handle = fopen($file, 'r')) !== false) {
             while (($data = fgetcsv($handle, 1000, ',')) !== false) {
                 if(!isset($data[0]) || count($data) !== 3 || $data[0] === 'country') {
                     continue;
                 }
                 
-                $regionRows[] = [
+                $dataRows[] = [
                     trim($data[0]),
                     trim($data[1]),
                     trim($data[2]),
@@ -50,14 +50,14 @@ class TimezonesRunner extends BaseRunner
                     time()
                 ];
                 
-                if(count($regionRows) === $this->maxExecuteRows) {
-                    $this->batchInsertDuplicate(Timezones::tableName(), $regionColumns, $regionRows, $regionDuplicates)->execute();
-                    $regionRows = [];
+                if(count($dataRows) === $this->maxExecuteRows) {
+                    $this->batchInsertDuplicate(Timezones::tableName(), $dataColumns, $dataRows, $dataDuplicates)->execute();
+                    $dataRows = [];
                 }
             }
             
-            if(count($regionRows) > 0) {
-                $this->batchInsertDuplicate(Timezones::tableName(), $regionColumns, $regionRows, $regionDuplicates)->execute();
+            if(count($dataRows) > 0) {
+                $this->batchInsertDuplicate(Timezones::tableName(), $dataColumns, $dataRows, $dataDuplicates)->execute();
             }
             
             fclose($handle);

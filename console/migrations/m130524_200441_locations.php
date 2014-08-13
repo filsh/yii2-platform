@@ -1,6 +1,7 @@
 <?php
 
 use yii\db\Schema;
+use yii\platform\geo\models\Locations;
 
 class m130524_200441_locations extends \yii\db\Migration
 {
@@ -11,7 +12,7 @@ class m130524_200441_locations extends \yii\db\Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('locations', [
+        $this->createTable(Locations::tableName(), [
             'id' => Schema::TYPE_INTEGER . '(10) unsigned NOT NULL PRIMARY KEY',
             'country' => Schema::TYPE_STRING . '(2) NOT NULL',
             'region' => Schema::TYPE_STRING . '(2) NOT NULL DEFAULT ""',
@@ -26,6 +27,6 @@ class m130524_200441_locations extends \yii\db\Migration
 
     public function down()
     {
-        $this->dropTable('locations');
+        $this->dropTable(Locations::tableName());
     }
 }

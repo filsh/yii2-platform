@@ -1,6 +1,7 @@
 <?php
 
 use yii\db\Schema;
+use yii\platform\geo\models\LocationBlock;
 
 class m130524_200461_location_block extends \yii\db\Migration
 {
@@ -11,7 +12,7 @@ class m130524_200461_location_block extends \yii\db\Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('location_block', [
+        $this->createTable(LocationBlock::tableName(), [
             'id' => Schema::TYPE_INTEGER . '(10) unsigned NOT NULL',
             'start' => Schema::TYPE_INTEGER . '(10) unsigned NOT NULL',
             'end' => Schema::TYPE_INTEGER . '(10) unsigned NOT NULL PRIMARY KEY',
@@ -22,6 +23,6 @@ class m130524_200461_location_block extends \yii\db\Migration
 
     public function down()
     {
-        $this->dropTable('location_block');
+        $this->dropTable(LocationBlock::tableName());
     }
 }

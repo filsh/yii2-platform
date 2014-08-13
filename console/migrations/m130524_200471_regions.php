@@ -1,6 +1,7 @@
 <?php
 
 use yii\db\Schema;
+use yii\platform\geo\models\Regions;
 
 class m130524_200471_regions extends \yii\db\Migration
 {
@@ -11,7 +12,7 @@ class m130524_200471_regions extends \yii\db\Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('regions', [
+        $this->createTable(Regions::tableName(), [
             'country' => Schema::TYPE_STRING . '(2) NOT NULL',
             'region' => Schema::TYPE_STRING . '(2) NOT NULL',
             'name' => Schema::TYPE_STRING . '(255) NOT NULL',
@@ -23,6 +24,6 @@ class m130524_200471_regions extends \yii\db\Migration
 
     public function down()
     {
-        $this->dropTable('regions');
+        $this->dropTable(Regions::tableName());
     }
 }
