@@ -42,6 +42,7 @@ class Application extends \yii\console\Application
         return array_merge(parent::coreCommands(), [
             'migrate' => 'yii\platform\console\controllers\MigrateController',
             'runner' => 'yii\platform\console\controllers\RunnerController',
+            'message' => 'yii\platform\console\controllers\MessageController',
             'platform' => 'yii\platform\console\controllers\PlatformController',
         ]);
     }
@@ -57,6 +58,7 @@ class Application extends \yii\console\Application
             'regions' => 'yii\platform\runners\RegionsRunner',
             'timezones' => 'yii\platform\runners\TimezonesRunner',
             'countries' => 'yii\platform\runners\CountriesRunner',
+            'message-countries' => 'yii\platform\runners\MessageCountriesRunner',
         ];
     }
 }

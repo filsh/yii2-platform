@@ -25,7 +25,7 @@ class PlatformController extends Controller
             $runner = $runner[0];
         }
         
-        $actions = ['locations', 'regions', 'timezones'];
+        $actions = ['locations', 'regions', 'timezones', 'countries'];
         foreach($actions as $action) {
             if($this->all || $this->confirm('Do you want to update "' . $action . '"?')) {
                 $runner->runAction($action);
