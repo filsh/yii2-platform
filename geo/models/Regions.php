@@ -2,6 +2,8 @@
 
 namespace yii\platform\geo\models;
 
+use yii\platform\P;
+
 /**
  * This is the model class for table "regions".
  *
@@ -13,6 +15,9 @@ namespace yii\platform\geo\models;
  */
 class Regions extends \yii\db\ActiveRecord
 {
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return [
@@ -29,9 +34,17 @@ class Regions extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+    public static function getDb()
+    {
+        return P::$app->get('pdb');
+    }
+    
+    /**
+     * @inheritdoc
+     */
     public static function tableName()
     {
-        return 'regions';
+        return '{{%regions}}';
     }
 
     /**

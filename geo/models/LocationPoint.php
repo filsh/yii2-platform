@@ -2,6 +2,8 @@
 
 namespace yii\platform\geo\models;
 
+use yii\platform\P;
+
 /**
  * This is the model class for table "location_point".
  *
@@ -10,6 +12,9 @@ namespace yii\platform\geo\models;
  */
 class LocationPoint extends \yii\db\ActiveRecord
 {
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return [
@@ -22,9 +27,17 @@ class LocationPoint extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+    public static function getDb()
+    {
+        return P::$app->get('pdb');
+    }
+    
+    /**
+     * @inheritdoc
+     */
     public static function tableName()
     {
-        return 'location_point';
+        return '{{%location_point}}';
     }
 
     /**
