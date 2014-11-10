@@ -9,12 +9,11 @@ class MultiHelper
 {
     public static function multipath(Sandbox $sandbox, $prefix = '', $suffix = '', $separator = '/')
     {
-        $multipath = $sandbox->getMultipath();
-        if($multipath === null) {
+        if($sandbox->multipath === null) {
             $pattern = implode($separator, ['%s', 'p%ds%d', '%s']);
-            $alias = sprintf($pattern, $prefix, $sandbox->getProjectId(), $sandbox->getSiteId(), $suffix);
+            $alias = sprintf($pattern, $prefix, $sandbox->projectId, $sandbox->siteId, $suffix);
         } else {
-            $pattern = implode($separator, ['%s', $multipath, '%s']);
+            $pattern = implode($separator, ['%s', $sandbox->multipath, '%s']);
             $alias = sprintf($pattern, $prefix, $suffix);
         }
         
