@@ -28,8 +28,7 @@ class Sandbox extends \yii\base\Component
             if(empty($config['class'])) {
                 throw new \yii\base\InvalidParamException('Application class must be specified.');
             }
-
-            $this->resolve();
+            
             $className = $config['class'];
             unset($config['class']);
             
@@ -38,6 +37,26 @@ class Sandbox extends \yii\base\Component
             echo $e->getMessage();
             die("\n\n");
         }
+    }
+    
+    public function resolveConfig()
+    {
+        $config = [
+            'components' => [
+                'sandbox' => $this
+            ]
+        ];
+        
+        $this->resolve();
+        
+        foreach($this->configBasePaths as $path) {
+            foreach($this->configFileNames as $fileName) {
+                $filePath = MultiHelper::multipath($this, $path, 'config/' . $fileName);
+                $config = ArrayHelper::merge($config, require($filePath));
+            }
+        }
+        
+        return $config;
     }
     
     protected function resolve()
@@ -61,23 +80,6 @@ class Sandbox extends \yii\base\Component
         }
         
         return $project;
-    }
-    
-    protected function resolveConfig()
-    {
-        $config = [
-            'components' => [
-                'sandbox' => $this
-            ]
-        ];
-        foreach($this->configBasePaths as $path) {
-            foreach($this->configFileNames as $fileName) {
-                $filePath = MultiHelper::multipath($this, $path, 'config/' . $fileName);
-                $config = ArrayHelper::merge($config, require($filePath));
-            }
-        }
-        
-        return $config;
     }
     
     public function getSettings()
