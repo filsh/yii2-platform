@@ -3,17 +3,16 @@
 namespace yii\platform\helpers;
 
 use yii\platform\P;
-use yii\platform\sandbox\Sandbox;
 
 class MultiHelper
 {
-    public static function multipath(Sandbox $sandbox, $prefix = '', $suffix = '', $separator = '/')
+    public static function multipath($multipath, $projectId, $siteId, $prefix = '', $suffix = '', $separator = '/')
     {
-        if($sandbox->multipath === null) {
+        if($multipath === null) {
             $pattern = implode($separator, ['%s', 'p%ds%d', '%s']);
-            $alias = sprintf($pattern, $prefix, $sandbox->projectId, $sandbox->siteId, $suffix);
+            $alias = sprintf($pattern, $prefix, $projectId, $siteId, $suffix);
         } else {
-            $pattern = implode($separator, ['%s', $sandbox->multipath, '%s']);
+            $pattern = implode($separator, ['%s', $multipath, '%s']);
             $alias = sprintf($pattern, $prefix, $suffix);
         }
         

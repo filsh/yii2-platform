@@ -8,12 +8,6 @@ use yii\helpers\ArrayHelper;
 
 class Sandbox extends \yii\base\Component
 {
-    public $multipath;
-    
-    public $projectId;
-    
-    public $siteId;
-    
     protected $projects;
     
     protected $settings;
@@ -39,7 +33,7 @@ class Sandbox extends \yii\base\Component
         }
     }
     
-    public function resolveConfig()
+    public function resolveConfig($projectName = null)
     {
         $config = [
             'components' => [
@@ -47,39 +41,14 @@ class Sandbox extends \yii\base\Component
             ]
         ];
         
-        $this->resolve();
-        
+        $project = $this->detect($projectName);
         foreach($this->configBasePaths as $path) {
             foreach($this->configFileNames as $fileName) {
-                $filePath = MultiHelper::multipath($this, $path, 'config/' . $fileName);
+                $filePath = MultiHelper::multipath($project['multipath'], $project['projectId'], $project['siteId'], $path, 'config/' . $fileName);
                 $config = ArrayHelper::merge($config, require($filePath));
             }
         }
-        
         return $config;
-    }
-    
-    protected function resolve()
-    {
-        foreach($this->projects as $project) {
-            if(!isset($project['rule'])) {
-                throw new \yii\base\InvalidConfigException('Invalid sandbox project config given.');
-            }
-            
-            /* @var $rule Rule */
-            $rule = P::createObject($project['rule']);
-            if($rule->isValid()) {
-                unset($project['rule']);
-                P::configure($this, $project);
-                break;
-            }
-        }
-        
-        if(empty($project) || empty($this->projectId) || empty($this->siteId)) {
-            throw new NotDetectingException('Project configuration is invalid or not found.');
-        }
-        
-        return $project;
     }
     
     public function getSettings()
@@ -110,5 +79,32 @@ class Sandbox extends \yii\base\Component
     public function setConfigFileNames($names)
     {
         $this->configFileNames = $names;
+    }
+    
+    protected function detect($projectName = null)
+    {
+        if($projectName !== null && isset($this->projects[$projectName])) {
+            $project = $this->projects[$projectName];
+        } else {
+            foreach($this->projects as $project) {
+                if(!isset($project['rule'])) {
+                    throw new \yii\base\InvalidConfigException('Invalid sandbox project config given.');
+                }
+
+                /* @var $rule Rule */
+                $rule = P::createObject($project['rule']);
+                if($rule->isValid()) {
+                    break;
+                }
+            }
+        }
+        
+        if(empty($project)) {
+            throw new NotDetectingException('Not found project configuration.');
+        } else if(!isset($project['projectId']) || !isset($project['siteId'])) {
+            throw new \yii\base\InvalidConfigException('Invalid sandbox project config given.');
+        }
+
+        return $project;
     }
 }
