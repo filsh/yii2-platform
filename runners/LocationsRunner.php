@@ -86,7 +86,7 @@ class LocationsRunner extends BaseRunner
                     (int) $data[0],
                     trim($data[1]),
                     trim($data[2]),
-                    trim($data[3]),
+                    @iconv(mb_detect_encoding($data[3]), 'UTF-8', $data[3]), // fix error: Incorrect string value: '\xE8s' for column 'city' at row 318
                     trim($data[4]),
                     (float) $data[5],
                     (float) $data[6],

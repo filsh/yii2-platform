@@ -50,14 +50,6 @@ class Countries extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function getDb()
-    {
-        return P::$app->get('pdb');
-    }
-    
-    /**
-     * @inheritdoc
-     */
     public static function tableName()
     {
         return '{{%countries}}';
@@ -74,9 +66,8 @@ class Countries extends \yii\db\ActiveRecord
             [['areainsqkm'], 'number'],
             [['iso_alpha2', 'continent'], 'string', 'max' => 2],
             [['iso_alpha3', 'fips_code', 'tld', 'currency'], 'string', 'max' => 3],
-            [['name', 'capital', 'languages'], 'string', 'max' => 255],
-            [['currency_name', 'postal_code_format', 'postal_code_regex', 'neighbours'], 'string', 'max' => 20],
-            [['phone', 'equivalent_fips_code'], 'string', 'max' => 10]
+            [['name', 'capital', 'languages', 'phone', 'equivalent_fips_code', 'postal_code_format', 'postal_code_regex', 'neighbours'], 'string', 'max' => 255],
+            [['currency_name'], 'string', 'max' => 20],
         ];
     }
 

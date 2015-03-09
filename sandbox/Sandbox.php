@@ -3,7 +3,6 @@
 namespace yii\platform\sandbox;
 
 use yii\platform\P;
-use yii\platform\helpers\MultiHelper;
 use yii\helpers\ArrayHelper;
 
 class Sandbox extends \yii\base\Component
@@ -41,10 +40,11 @@ class Sandbox extends \yii\base\Component
             ]
         ];
         
-        $project = $this->detect($projectName);
+        $project = $this->resolve($projectName);
         foreach($this->configBasePaths as $path) {
-            foreach($this->configFileNames as $fileName) {
-                $filePath = MultiHelper::multipath($project['multipath'], $project['projectId'], $project['siteId'], $path, 'config/' . $fileName);
+            $configFileNames = !empty($project['configFileNames']) ? $project['configFileNames'] : $this->configFileNames;
+            foreach($configFileNames as $fileName) {
+                $filePath = $this->resolveConfigFile($project, $path, 'config/' . $fileName);
                 $config = ArrayHelper::merge($config, require($filePath));
             }
         }
@@ -81,7 +81,7 @@ class Sandbox extends \yii\base\Component
         $this->configFileNames = $names;
     }
     
-    protected function detect($projectName = null)
+    protected function resolve($projectName = null)
     {
         if($projectName !== null && isset($this->projects[$projectName])) {
             $project = $this->projects[$projectName];
@@ -106,5 +106,23 @@ class Sandbox extends \yii\base\Component
         }
 
         return $project;
+    }
+    
+    protected function resolveConfigFile($project, $prefix = '', $suffix = '')
+    {
+        if(!isset($project['multipath'])) {
+            $pattern = implode('/', ['%s', 'p%ds%d', '%s']);
+            $alias = sprintf($pattern, $prefix, $project['projectId'], $project['siteId'], $suffix);
+        } else {
+            $pattern = implode('/', ['%s', $project['multipath'], '%s']);
+            $alias = sprintf($pattern, $prefix, $suffix);
+        }
+        
+        $path = P::getAlias($alias);
+        if(($realPath = realpath($path)) === false) {
+            throw new \yii\base\InvalidParamException('File path is invalid or not exists [' . $path . '].');
+        }
+        
+        return $realPath;
     }
 }
