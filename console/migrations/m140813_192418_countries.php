@@ -25,7 +25,7 @@ class m140813_192418_countries extends \yii\db\Migration
             'tld' => Schema::TYPE_STRING . '(3)',
             'currency' => Schema::TYPE_STRING . '(3)',
             'currency_name' => Schema::TYPE_STRING . '(20)',
-            'phone' => Schema::TYPE_STRING . '(10)',
+            'phone' => Schema::TYPE_STRING . '(255) DEFAULT NULL',
             'postal_code_format' => Schema::TYPE_STRING . '(255) DEFAULT NULL',
             'postal_code_regex' => Schema::TYPE_STRING . '(255) DEFAULT NULL',
             'languages' => Schema::TYPE_STRING . '(255) DEFAULT NULL',

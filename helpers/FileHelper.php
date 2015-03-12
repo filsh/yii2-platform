@@ -28,9 +28,12 @@ class FileHelper extends \yii\helpers\FileHelper
             CURLOPT_FILE            => $handle,
             CURLOPT_TIMEOUT         => 10 * 60,
             CURLOPT_URL             => $fileUrl,
-            CURLOPT_FOLLOWLOCATION  => true
+            CURLOPT_FOLLOWLOCATION  => true,
+            CURLOPT_HTTPHEADER      => [
+                'User-Agent: Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0',
+            ],
         ];
-
+        
         $ch = curl_init();
         curl_setopt_array($ch, $curlOptions);
         curl_exec($ch);
