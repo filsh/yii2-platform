@@ -31,7 +31,7 @@ class m140813_192418_countries extends \yii\db\Migration
             'languages' => Schema::TYPE_STRING . '(255) DEFAULT NULL',
             'geoname_id' => Schema::TYPE_INTEGER . ' DEFAULT NULL',
             'neighbours' => Schema::TYPE_STRING . '(255) DEFAULT NULL',
-            'equivalent_fips_code' => Schema::TYPE_STRING . '(DEFAULT NULL) DEFAULT NULL',
+            'equivalent_fips_code' => Schema::TYPE_STRING . '(255) DEFAULT NULL',
             'create_time' => Schema::TYPE_INTEGER.' NOT NULL',
             'update_time' => Schema::TYPE_INTEGER.' NOT NULL',
             'PRIMARY KEY (`iso_alpha2`)'
