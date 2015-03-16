@@ -3,7 +3,6 @@
 namespace yii\platform\sandbox;
 
 use yii\platform\P;
-use yii\platform\helpers\MultiHelper;
 use yii\helpers\ArrayHelper;
 
 class Sandbox extends \yii\base\Component
@@ -43,9 +42,9 @@ class Sandbox extends \yii\base\Component
         
         $project = $this->resolve($projectName);
         foreach($this->configBasePaths as $path) {
-            $configFileNames = isset($project['configFileNames']) ? $project['configFileNames'] : $this->configFileNames;
+            $configFileNames = !empty($project['configFileNames']) ? $project['configFileNames'] : $this->configFileNames;
             foreach($configFileNames as $fileName) {
-                $filePath = $this->multipath($project, $path, 'config/' . $fileName);
+                $filePath = $this->resolveConfigFile($project, $path, 'config/' . $fileName);
                 $config = ArrayHelper::merge($config, require($filePath));
             }
         }
@@ -109,13 +108,13 @@ class Sandbox extends \yii\base\Component
         return $project;
     }
     
-    public function multipath($project, $prefix = '', $suffix = '', $separator = '/')
+    protected function resolveConfigFile($project, $prefix = '', $suffix = '')
     {
         if(!isset($project['multipath'])) {
-            $pattern = implode($separator, ['%s', 'p%ds%d', '%s']);
+            $pattern = implode('/', ['%s', 'p%ds%d', '%s']);
             $alias = sprintf($pattern, $prefix, $project['projectId'], $project['siteId'], $suffix);
         } else {
-            $pattern = implode($separator, ['%s', $project['multipath'], '%s']);
+            $pattern = implode('/', ['%s', $project['multipath'], '%s']);
             $alias = sprintf($pattern, $prefix, $suffix);
         }
         
