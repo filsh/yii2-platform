@@ -41,10 +41,11 @@ class Sandbox extends \yii\base\Component
             ]
         ];
         
-        $project = $this->detect($projectName);
+        $project = $this->resolve($projectName);
         foreach($this->configBasePaths as $path) {
-            foreach($this->configFileNames as $fileName) {
-                $filePath = MultiHelper::multipath($project['multipath'], $project['projectId'], $project['siteId'], $path, 'config/' . $fileName);
+            $configFileNames = isset($project['configFileNames']) ? $project['configFileNames'] : $this->configFileNames;
+            foreach($configFileNames as $fileName) {
+                $filePath = $this->multipath($project, $path, 'config/' . $fileName);
                 $config = ArrayHelper::merge($config, require($filePath));
             }
         }
@@ -81,7 +82,7 @@ class Sandbox extends \yii\base\Component
         $this->configFileNames = $names;
     }
     
-    protected function detect($projectName = null)
+    protected function resolve($projectName = null)
     {
         if($projectName !== null && isset($this->projects[$projectName])) {
             $project = $this->projects[$projectName];
@@ -106,5 +107,23 @@ class Sandbox extends \yii\base\Component
         }
 
         return $project;
+    }
+    
+    public function multipath($project, $prefix = '', $suffix = '', $separator = '/')
+    {
+        if(!isset($project['multipath'])) {
+            $pattern = implode($separator, ['%s', 'p%ds%d', '%s']);
+            $alias = sprintf($pattern, $prefix, $project['projectId'], $project['siteId'], $suffix);
+        } else {
+            $pattern = implode($separator, ['%s', $project['multipath'], '%s']);
+            $alias = sprintf($pattern, $prefix, $suffix);
+        }
+        
+        $path = P::getAlias($alias);
+        if(($realPath = realpath($path)) === false) {
+            throw new \yii\base\InvalidParamException('File path is invalid or not exists [' . $path . '].');
+        }
+        
+        return $realPath;
     }
 }

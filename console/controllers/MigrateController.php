@@ -46,11 +46,6 @@ class MigrateController extends \yii\console\controllers\MigrateController
      */
     public $migrationPlatformPath = '@platform/console/migrations';
     
-    /**
-     * @inheritdoc
-     */
-    public $db = 'pdb';
-    
     public function beforeAction($action)
     {
         $path = \Yii::getAlias($this->migrationPlatformPath);
