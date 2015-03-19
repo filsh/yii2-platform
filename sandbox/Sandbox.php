@@ -41,6 +41,10 @@ class Sandbox extends \yii\base\Component
         ];
         
         $project = $this->resolve($projectName);
+        if(!empty($project['settings'])) {
+            $this->setSettings($project['settings']);
+        }
+        
         foreach($this->configBasePaths as $path) {
             $configFileNames = !empty($project['configFileNames']) ? $project['configFileNames'] : $this->configFileNames;
             foreach($configFileNames as $fileName) {
